@@ -9,6 +9,7 @@ export default function ProtectedLayout ({
 }) {
   return (
     <>
+      {/* @ts-expect-error Server Component */}
       <Header />
       {children}
     </>
