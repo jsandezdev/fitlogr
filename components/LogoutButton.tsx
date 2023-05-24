@@ -2,9 +2,10 @@
 
 import { signOut } from 'next-auth/react'
 
-export const LogoutButton = () => {
+export const LogoutButton = ({ className, ...props }) => {
   return (
     <button
+      className={className}
       type='button'
       onClick={() => signOut()}
     >

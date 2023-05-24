@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { prisma } from '@/lib/prisma'
 
@@ -34,6 +36,8 @@ export default async function ChallengePage () {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+      <Link className='p-2 bg-blue-950 text-lime-50 rounded' href='/challenge/new'>New challenge</Link>
     </>
   )
 }

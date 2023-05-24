@@ -1,32 +1,31 @@
-import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/lib/auth'
 
-import { LogoutButton } from './LogoutButton'
+import { Navigation } from './Navigation'
+
+const navLinks = [
+  {
+    name: 'Dashboard',
+    href: '/dashboard'
+  },
+  {
+    name: 'Challenge',
+    href: '/challenge'
+  },
+  {
+    name: 'Profile',
+    href: '/profile'
+  }
+]
 
 export const Header = async () => {
   const session = await getServerSession(authOptions)
 
   return (
     <header>
-      Logged in as {session?.user?.email}
-      <nav>
-        <ul>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/challenge">Challenge</Link>
-          </li>
-          <li>
-            <Link href="/profile">Profile</Link>
-          </li>
-          <li>
-            <LogoutButton />
-          </li>
-        </ul>
-      </nav>
+      <p className='bg-gray-800 text-white text-center p-2'>Logged in as {session?.user?.email}</p>
+      <Navigation navLinks={navLinks} />
     </header>
   )
 }

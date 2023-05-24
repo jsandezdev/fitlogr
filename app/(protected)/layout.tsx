@@ -8,10 +8,12 @@ export default function ProtectedLayout ({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <main>
       {/* @ts-expect-error Server Component */}
       <Header />
-      {children}
-    </>
+      <div className='max-w-screen-xl mx-auto p-4'>
+        {children}
+      </div>
+    </main>
   )
 }
