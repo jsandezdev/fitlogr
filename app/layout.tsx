@@ -1,9 +1,7 @@
-// import './globals.css'
+import './globals.css'
 
 import { Inter } from 'next/font/google'
 import React from 'react'
-
-import { Header } from '@/components/Header'
 
 import { NextAuthProvider } from './providers'
 
@@ -23,7 +21,6 @@ export default function RootLayout ({
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider>
-          <Header/>
           {children}
         </NextAuthProvider>
       </body>

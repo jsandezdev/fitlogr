@@ -1,15 +1,13 @@
 import React from 'react'
 
-import { Header } from '@/components/Header'
-
-export default function ProtectedLayout ({
+export default function AuthLayout ({
   children
 }: {
   children: React.ReactNode
 }) {
   return (
     <>
-      <Header />
+      <div>Auth layout</div>
       {children}
     </>
   )
