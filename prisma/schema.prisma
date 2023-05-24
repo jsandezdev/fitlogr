@@ -7,6 +7,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// enum WeekDay {
+//   Monday = "1"
+//   Tuesday = "2"
+//   Wednesday = "3"
+//   Thursday = "4"
+//   Friday = "5"
+//   Saturday = "6"
+//   Sunday = "7"
+// }
+
+enum WeekDay {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+enum GoalType {
+  Gain
+  Lose
+}
+
+enum Measurement {
+  Neck
+  Shoulders
+  Chest
+  Bicep
+  Waist
+  Hips
+  Thigh
+}
+
+enum UnitOfTime {
+  Day
+  Week
+  Month
+  Year
+}
+
+type MeasurementGoal {
+  measurement         Measurement
+  goalType            GoalType
+  amount              Float
+  frequencyAmount     Float
+  frequencyUnitOfTime UnitOfTime
+}
+
+type WeightGoal {
+  goalType            GoalType
+  amount              Float
+  frequencyAmount     Float
+  frequencyUnitOfTime UnitOfTime
+}
+
 model Account {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   userId             String   @db.ObjectId
@@ -42,16 +99,16 @@ model User {
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
   challenges    Challenge[]
   accounts      Account[]
   sessions      Session[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model VerificationToken {
-  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
@@ -60,12 +117,42 @@ model VerificationToken {
 }
 
 model Challenge {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String @db.ObjectId
-  startDate DateTime
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                               String @id @default(auto()) @map("_id") @db.ObjectId
+  userId                           String @db.ObjectId
+  startDate                        DateTime
+  endDate                          DateTime
+  revisionFrequencyNumber          Int
+  revisionFrequencyUnitOfTime      String 
+  includeRevisionBodyPhotos        Boolean
+  includeRevisionBodyWeight        Boolean
+  includeRevisionBodyMeasurements  Boolean
+  includeDietLog                   Boolean
+  monthlyCheatMeals                Int
+  includeGoals                     Boolean
+  weightGoal                       WeightGoal
+  measurementGoals                 MeasurementGoal[]
+  weeklyTrainingDays               WeekDay[]  
 
+  createdAt                        DateTime @default(now())
+  updatedAt                        DateTime @updatedAt  
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+// model BodyPart {
+//   id   String   @id @default(auto()) @map("_id") @db.ObjectId
+//   name String   @unique
+
+//   challenges ChallengeBodyPart[]
+// }
+
+// model ChallengeBodyPart {
+//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+//   challengeId String   @db.ObjectId
+//   bodyPartId  String   @db.ObjectId
+  
+//   challenge   Challenge @relation(fields: [challengeId], references: [id])
+//   bodyPart    BodyPart  @relation(fields: [bodyPartId], references: [id])
+
+//   @@unique([challengeId, bodyPartId])
+// }
