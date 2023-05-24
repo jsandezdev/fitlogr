@@ -1,6 +1,16 @@
 import Link from 'next/link'
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { PageTitle } from '@/components/PageTitle'
+import { buttonVariants } from '@/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import { prisma } from '@/lib/prisma'
 
 export default async function ChallengePage () {
@@ -10,34 +20,77 @@ export default async function ChallengePage () {
     // },
   })
 
+  const invoices = [
+    {
+      invoice: 'INV001',
+      paymentStatus: 'Paid',
+      totalAmount: '$250.00',
+      paymentMethod: 'Credit Card'
+    },
+    {
+      invoice: 'INV002',
+      paymentStatus: 'Pending',
+      totalAmount: '$150.00',
+      paymentMethod: 'PayPal'
+    },
+    {
+      invoice: 'INV003',
+      paymentStatus: 'Unpaid',
+      totalAmount: '$350.00',
+      paymentMethod: 'Bank Transfer'
+    },
+    {
+      invoice: 'INV004',
+      paymentStatus: 'Paid',
+      totalAmount: '$450.00',
+      paymentMethod: 'Credit Card'
+    },
+    {
+      invoice: 'INV005',
+      paymentStatus: 'Paid',
+      totalAmount: '$550.00',
+      paymentMethod: 'PayPal'
+    },
+    {
+      invoice: 'INV006',
+      paymentStatus: 'Pending',
+      totalAmount: '$200.00',
+      paymentMethod: 'Bank Transfer'
+    },
+    {
+      invoice: 'INV007',
+      paymentStatus: 'Unpaid',
+      totalAmount: '$300.00',
+      paymentMethod: 'Credit Card'
+    }
+  ]
+
   return (
     <>
-      <div>Hello! Number of challenges: {challenges.length}</div>
-      <p>https://ui.shadcn.com/docs/components/alert</p>
-      <a href="https://github.com/shadcn/ui/blob/main/apps/www/app/examples/authentication/page.tsx" target="_blank" rel="noreferrer">Ejemplo</a>
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-          Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Is it styled?</AccordionTrigger>
-          <AccordionContent>
-          Yes. It comes with default styles that matches the other components
-          aesthetic.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger>Is it animated?</AccordionTrigger>
-          <AccordionContent>
-          Yes. It&apos;s animated by default, but you can disable it if you prefer.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <Link className='p-2 bg-blue-950 text-lime-50 rounded' href='/challenge/new'>New challenge</Link>
+      <PageTitle>Challenges</PageTitle>
+      <div className='mb-4'>Hello! Number of challenges: {challenges.length}</div>
+      <Link href='/challenge/new' className={buttonVariants()}>New challenge</Link>
+      <Table>
+        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Invoice</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Method</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {invoices.map((invoice) => (
+            <TableRow key={invoice.invoice}>
+              <TableCell className="font-medium">{invoice.invoice}</TableCell>
+              <TableCell>{invoice.paymentStatus}</TableCell>
+              <TableCell>{invoice.paymentMethod}</TableCell>
+              <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </>
   )
 }

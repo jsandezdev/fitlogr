@@ -1,6 +1,7 @@
 
 import { getServerSession } from 'next-auth'
 
+import { PageTitle } from '@/components/PageTitle'
 import { authOptions } from '@/lib/auth'
 
 export default async function Dashboard () {
@@ -9,9 +10,7 @@ export default async function Dashboard () {
 
   return (
     <main className="text">
-      <div>
-        <h1 className='text-2xl'>Dashboard</h1>
-      </div>
+      <PageTitle>Dashboard</PageTitle>
     </main>
   )
 }

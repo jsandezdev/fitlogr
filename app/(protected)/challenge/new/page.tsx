@@ -1,9 +1,12 @@
+import { PageTitle } from '@/components/PageTitle'
+
 import { NewChallengeForm } from './NewChallengeForm'
 
 export default async function NewChallenge () {
   return (
-    <main>
+    <>
+      <PageTitle>New challenge</PageTitle>
       <NewChallengeForm/>
-    </main>
+    </>
   )
 }

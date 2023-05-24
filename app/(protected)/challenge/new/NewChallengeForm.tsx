@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
   username: z.string().min(2).max(50)
-})
+}) // @TODO: See https://github.com/shadcn/taxonomy/blob/main/components/user-auth-form.tsx to view how to store validations
 
 export const NewChallengeForm = () => {
   // 1. Define your form.
