@@ -123,6 +123,7 @@ model VerificationToken {
 model Challenge {
   id                               String @id @default(auto()) @map("_id") @db.ObjectId
   userId                           String @db.ObjectId
+  name                             String?
   startDate                        DateTime
   endDate                          DateTime
   revisionFrequencyNumber          Int
@@ -132,7 +133,8 @@ model Challenge {
   includeRevisionBodyMeasurements  Boolean
   includeDietLog                   Boolean
   monthlyCheatMeals                Int
-  includeGoals                     Boolean
+  includeWeightGoal                Boolean
+  includeMeasurementGoals          Boolean
   weightGoal                       WeightGoal
   measurementGoals                 MeasurementGoal[]
   weeklyTrainingDays               WeekDay[]  

@@ -1,3 +1,4 @@
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import bcrypt from 'bcrypt'
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -6,14 +7,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import { prisma } from '@/lib/prisma'
 
 export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: 'jwt'
-  },
-  pages: {
-    signIn: '/login'
-  },
-  debug: process.env.NODE_ENV === 'development',
-  secret: process.env.NEXTAUTH_SECRET,
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -71,7 +65,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     session: ({ session, token }) => {
-      console.log('Session Callback', { session, token })
+      // console.log('Session Callback', { session, token })
       return {
         ...session,
         user: {
@@ -82,7 +76,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     jwt: ({ token, user }) => {
-      console.log('JWT Callback', { token, user })
+      // console.log('JWT Callback', { token, user })
       if (user) {
         const u = user as unknown as any
         return {
@@ -92,6 +86,21 @@ export const authOptions: NextAuthOptions = {
         }
       }
       return token
+    },
+    async signIn ({ account, profile }) {
+      if (account?.provider === 'google') {
+        return profile?.email_verified
+      }
+
+      return true
     }
-  }
+  },
+  pages: {
+    signIn: '/login'
+  },
+  debug: process.env.NODE_ENV === 'development',
+  session: {
+    strategy: 'jwt'
+  },
+  secret: process.env.NEXTAUTH_SECRET
 }

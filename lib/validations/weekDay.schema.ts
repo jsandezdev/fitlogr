@@ -1,11 +1,5 @@
 import { z } from 'zod'
 
-export const weekDaySchema = z.enum([
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday'
-])
+import { WeekDay } from '../config'
+
+export const weekDaySchema = z.nativeEnum(WeekDay)

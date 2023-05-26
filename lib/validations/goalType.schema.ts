@@ -1,3 +1,5 @@
 import { z } from 'zod'
 
-export const goalTypeSchema = z.enum(['Gain', 'Lose'])
+import { GoalType } from '../config'
+
+export const goalTypeSchema = z.nativeEnum(GoalType)

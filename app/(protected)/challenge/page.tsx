@@ -11,14 +11,16 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { prisma } from '@/lib/prisma'
 
 export default async function ChallengePage () {
-  const challenges = await prisma.challenge.findMany({
-    // where: {
-    //   author: { id: userId },
-    // },
+  const challenges = await fetch('/api/challenge', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
+
+  // console.log(challenges)
 
   const invoices = [
     {

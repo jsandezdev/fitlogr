@@ -3,7 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+import { useState } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { FaSpinner } from 'react-icons/fa'
 import * as z from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -15,53 +17,180 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { toast } from '@/components/ui/use-toast'
-import { unitsOfTime } from '@/lib/config'
+import { GoalType, Measurement, UnitOfTime, WeekDay } from '@/lib/config'
 import { cn } from '@/lib/utils'
+import { measurementGoalSchema } from '@/lib/validations/measurementGoal.schema'
 import { unitOfTimeSchema } from '@/lib/validations/unitOfTime.schema'
+import { weekDaySchema } from '@/lib/validations/weekDay.schema'
+import { weightGoalSchema } from '@/lib/validations/weightGoal.schema'
 
 const newChallengeFormSchema = z.object({
+  name: z.string(),
   startDate: z.date(),
   endDate: z.date(),
   revisionFrequencyNumber: z.number(),
   revisionFrequencyUnitOfTime: unitOfTimeSchema,
   includeRevisionBodyPhotos: z.boolean(),
   includeRevisionBodyWeight: z.boolean(),
-  includeRevisionBodyMeasurements: z.boolean()
+  includeRevisionBodyMeasurements: z.boolean(),
+  weeklyTrainingDays: z.array(weekDaySchema).refine((value) => value.some((item) => item), {
+    message: 'You have to select at least one item.'
+  }),
+  includeDietLog: z.boolean(),
+  monthlyCheatMeals: z.number(),
+  includeWeightGoal: z.boolean(),
+  includeMeasurementGoals: z.boolean(),
+  weightGoal: weightGoalSchema,
+  measurementGoals: z.array(measurementGoalSchema)
 })
 
 type NewChallengeFormValues = z.infer<typeof newChallengeFormSchema>
 
 const defaultValues: Partial<NewChallengeFormValues> = {
+  name: 'My challenge',
   startDate: new Date(),
   endDate: new Date(),
   revisionFrequencyNumber: 1,
-  revisionFrequencyUnitOfTime: unitsOfTime[0],
+  revisionFrequencyUnitOfTime: UnitOfTime.Week,
   includeRevisionBodyWeight: false,
   includeRevisionBodyPhotos: false,
-  includeRevisionBodyMeasurements: false
+  includeRevisionBodyMeasurements: false,
+  weeklyTrainingDays: [WeekDay.Monday, WeekDay.Wednesday, WeekDay.Friday],
+  includeDietLog: false,
+  monthlyCheatMeals: 4,
+  includeWeightGoal: true,
+  includeMeasurementGoals: false,
+  weightGoal: {
+    amount: 1,
+    frequencyAmount: 1,
+    frequencyUnitOfTime: UnitOfTime.Month,
+    goalType: GoalType.Lose
+  },
+  measurementGoals: [
+    {
+      measurement: Measurement.Bicep,
+      amount: 0.5,
+      frequencyAmount: 1,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    },
+    {
+      measurement: Measurement.Chest,
+      amount: 1,
+      frequencyAmount: 2,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    },
+    {
+      measurement: Measurement.Hips,
+      amount: 1,
+      frequencyAmount: 2,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    },
+    {
+      measurement: Measurement.Neck,
+      amount: 1,
+      frequencyAmount: 2,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    },
+    {
+      measurement: Measurement.Shoulders,
+      amount: 1,
+      frequencyAmount: 2,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    },
+    {
+      measurement: Measurement.Thigh,
+      amount: 1,
+      frequencyAmount: 2,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    },
+    {
+      measurement: Measurement.Waist,
+      amount: 1,
+      frequencyAmount: 2,
+      frequencyUnitOfTime: UnitOfTime.Week,
+      goalType: GoalType.Gain
+    }
+  ]
 }
 
 export const NewChallengeForm = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const form = useForm<NewChallengeFormValues>({
     resolver: zodResolver(newChallengeFormSchema),
     defaultValues
   })
 
-  function onSubmit (formData: NewChallengeFormValues) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(formData, null, 2)}</code>
-        </pre>
-      )
+  const { fields: measurementGoalsFields } = useFieldArray({
+    name: 'measurementGoals',
+    control: form.control
+  })
+
+  async function onSubmit (formData: NewChallengeFormValues) {
+    // toast({
+    //   title: 'You submitted the following values:',
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(formData, null, 2)}</code>
+    //     </pre>
+    //   )
+    // })
+
+    setIsLoading(true)
+
+    // @TODO
+    const response = await fetch('/api/challenge/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
     })
+
+    setIsLoading(false)
+
+    if (!response?.ok) {
+      return toast({
+        title: 'Something went wrong.',
+        description: 'Your challenge was not created. Please try again.',
+        variant: 'destructive'
+      })
+    }
+
+    toast({
+      description: 'Your challenge has been created.'
+    })
+
+    // router.refresh()
   }
 
   return (
     <Form {...form}>
-      {/* <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre> */}
+      <div>
+        <p>Form Errors:</p>
+        <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
+      </div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription></FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="startDate"
@@ -158,7 +287,7 @@ export const NewChallengeForm = () => {
             <FormItem>
               <FormLabel>revisionFrequencyNumber</FormLabel>
               <FormControl>
-                <Input type='number' {...field} />
+                <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
@@ -178,7 +307,7 @@ export const NewChallengeForm = () => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  { unitsOfTime.map((unitOfTime, index) => <SelectItem key={`revisionFrequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
+                  { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`revisionFrequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
                 </SelectContent>
               </Select>
               <FormDescription></FormDescription>
@@ -259,7 +388,315 @@ export const NewChallengeForm = () => {
           </div>
         </div>
 
-        <Button type="submit">Submit</Button>
+        <FormField
+          control={form.control}
+          name="weeklyTrainingDays"
+          render={() => (
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel className="text-base">Training days</FormLabel>
+                <FormDescription>
+                  Select the items you want to display in the sidebar.
+                </FormDescription>
+              </div>
+              { (Object.keys(WeekDay) as Array<WeekDay>).map((item) => (
+                <FormField
+                  key={item}
+                  control={form.control}
+                  name="weeklyTrainingDays"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={item}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(item)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item])
+                                : field.onChange(
+                                  field.value?.filter(
+                                    (value) => value !== item
+                                  )
+                                )
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {item}
+                        </FormLabel>
+                      </FormItem>
+                    )
+                  }}
+                />
+              ))}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="includeDietLog"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  includeDietLog
+                </FormLabel>
+                <FormDescription>
+                  You can manage your mobile notifications in the mobile settings page.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <div className={!form.getValues().includeDietLog ? 'hidden' : '' }>
+          <FormField
+            control={form.control}
+            name="monthlyCheatMeals"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>monthlyCheatMeals</FormLabel>
+                <FormControl>
+                  <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div>
+          <h3 className="mb-4 text-lg font-medium">Goals</h3>
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="includeWeightGoal"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                    includeWeightGoal
+                    </FormLabel>
+                    <FormDescription>
+                      Receive emails about your account activity.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="includeMeasurementGoals"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                    includeMeasurementGoals
+                    </FormLabel>
+                    <FormDescription>
+                      Receive emails about new products, features, and more.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className={!form.getValues().includeWeightGoal ? 'hidden' : '' }>
+          <h3 className="mb-4 text-lg font-medium">Weight goal</h3>
+          <FormField
+            control={form.control}
+            name="weightGoal.goalType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>goalType</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    { (Object.keys(GoalType) as Array<GoalType>).map((goalType, index) => <SelectItem key={`weightGoal_goalType_${goalType}`} value={goalType}>{goalType}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  You can manage email addresses in your
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="weightGoal.amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>amount</FormLabel>
+                <FormControl>
+                  <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="weightGoal.frequencyAmount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>weightGoal.frequencyAmount</FormLabel>
+                <FormControl>
+                  <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="weightGoal.frequencyUnitOfTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>frequencyUnitOfTime</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`weightGoal_frequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  You can manage email addresses in your
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className={!form.getValues().includeMeasurementGoals ? 'hidden' : '' }>
+          <h3 className="mb-4 text-lg font-medium">Measurement goals</h3>
+          { measurementGoalsFields.map((field, index) => (
+            <div key={'measurementGoal_' + index}>
+              <p>{field.measurement}</p>
+              <FormField
+                control={form.control}
+                name={`measurementGoals.${index}.goalType`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>goalType</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        { (Object.keys(GoalType) as Array<GoalType>).map((goalType, index) => <SelectItem key={`measurementGoals.${index}_goalType_${goalType}`} value={goalType}>{goalType}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                  You can manage email addresses in your
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`measurementGoals.${index}.amount`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>amount</FormLabel>
+                    <FormControl>
+                      <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`measurementGoals.${index}.frequencyAmount`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>frequencyAmount</FormLabel>
+                    <FormControl>
+                      <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`measurementGoals.${index}.frequencyUnitOfTime`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>frequencyUnitOfTime</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`measurementGoals.${index}_frequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                  You can manage email addresses in your
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* <Button type="submit">Submit</Button> */}
+        <Button
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading && (
+            <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          <span>Save</span>
+        </Button>
       </form>
     </Form>
   )
