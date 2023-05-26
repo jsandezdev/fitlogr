@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getServerSession } from 'next-auth'
 
 import { PageTitle } from '@/components/PageTitle'
 import { buttonVariants } from '@/components/ui/button'
@@ -11,61 +12,53 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 
 export default async function ChallengePage () {
-  const challenges = await fetch('/api/challenge', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+
+  const challenges = await prisma.challenge.findMany({
+    where: {
+      userId: session.user.id
     }
   })
 
-  // console.log(challenges)
+  // const challenges = await getData()
 
-  const invoices = [
-    {
-      invoice: 'INV001',
-      paymentStatus: 'Paid',
-      totalAmount: '$250.00',
-      paymentMethod: 'Credit Card'
-    },
-    {
-      invoice: 'INV002',
-      paymentStatus: 'Pending',
-      totalAmount: '$150.00',
-      paymentMethod: 'PayPal'
-    },
-    {
-      invoice: 'INV003',
-      paymentStatus: 'Unpaid',
-      totalAmount: '$350.00',
-      paymentMethod: 'Bank Transfer'
-    },
-    {
-      invoice: 'INV004',
-      paymentStatus: 'Paid',
-      totalAmount: '$450.00',
-      paymentMethod: 'Credit Card'
-    },
-    {
-      invoice: 'INV005',
-      paymentStatus: 'Paid',
-      totalAmount: '$550.00',
-      paymentMethod: 'PayPal'
-    },
-    {
-      invoice: 'INV006',
-      paymentStatus: 'Pending',
-      totalAmount: '$200.00',
-      paymentMethod: 'Bank Transfer'
-    },
-    {
-      invoice: 'INV007',
-      paymentStatus: 'Unpaid',
-      totalAmount: '$300.00',
-      paymentMethod: 'Credit Card'
-    }
-  ]
+  // async function getData () {
+  //   try {
+  //     const res = await fetch(`${process.env.HOST}/api/challenge`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authentication: 'Bearer ' + 'getToken()'
+  //       }
+  //     })
+
+  //     console.log('res.ok -> ', res.ok)
+
+  //     const data = await res.json()
+  //     console.log(data)
+
+  //     // if (!res.ok) {
+  //     //   throw new Error('Failed to fetch data')
+  //     // }
+
+  //     return data
+  //   } catch (error) {
+  //     console.log(error)
+  //     toast({
+  //       title: 'Error',
+  //       description: 'Friday, February 10, 2023 at 5:57 PM'
+  //     })
+  //     return []
+  //   }
+  // }
 
   return (
     <>
@@ -73,22 +66,16 @@ export default async function ChallengePage () {
       <div className='mb-4'>Hello! Number of challenges: {challenges.length}</div>
       <Link href='/challenge/new' className={buttonVariants()}>New challenge</Link>
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>A list of your recent challenges.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead>Name</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+          {challenges.map((challenge) => (
+            <TableRow key={challenge.id}>
+              <TableCell className="font-medium">{challenge.name}</TableCell>
             </TableRow>
           ))}
         </TableBody>

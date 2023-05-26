@@ -5,18 +5,12 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { challengeSchema } from '@/lib/validations/challenge.schema'
 
-// const challengeCreateSchema = z.object({
-//   title: z.string(),
-//   content: z.string().optional()
-// })
-
 export async function GET () {
   try {
     const session = await getServerSession(authOptions)
-    console.log('🚀 ~ file: route.ts:16 ~ GET ~ session:', session)
 
     if (!session) {
-      return new Response('Unauthorized', { status: 403 })
+      return new Response('Unauthorized', { status: 401 })
     }
 
     const challenges = await prisma.challenge.findMany({
@@ -25,12 +19,10 @@ export async function GET () {
       //   id: true,
       //   name: true
       // },
-      // where: {
-      //   userId: session.user.id
-      // }
+      where: {
+        userId: session.user.id
+      }
     })
-
-    // console.log(challenges)
 
     return new Response(JSON.stringify(challenges))
   } catch (error) {
@@ -43,7 +35,7 @@ export async function POST (req: Request) {
     const session = await getServerSession(authOptions)
 
     if (!session) {
-      return new Response('Unauthorized', { status: 403 })
+      return new Response('Unauthorized', { status: 401 })
     }
 
     const json = await req.json()
