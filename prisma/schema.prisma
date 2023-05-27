@@ -11,16 +11,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// enum WeekDay {
-//   Monday = "1"
-//   Tuesday = "2"
-//   Wednesday = "3"
-//   Thursday = "4"
-//   Friday = "5"
-//   Saturday = "6"
-//   Sunday = "7"
-// }
-
 enum WeekDay {
   Monday
   Tuesday
@@ -36,7 +26,7 @@ enum GoalType {
   Lose
 }
 
-enum Measurement {
+enum BodyPart {
   Neck
   Shoulders
   Chest
@@ -59,8 +49,13 @@ enum ChallengeStatus {
   Finished
 }
 
-type MeasurementGoal {
-  measurement         Measurement
+type Measurement {
+  bodyPart BodyPart
+  amount   Float
+}
+
+type BodyPartGoal {
+  bodyPart            BodyPart
   goalType            GoalType
   amount              Float
   frequencyAmount     Float
@@ -109,12 +104,13 @@ model User {
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  challenges    Challenge[]
-  accounts      Account[]
-  sessions      Session[]
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  challenges     Challenge[]
+  accounts       Account[]
+  sessions       Session[]
 }
 
 model VerificationToken {
@@ -136,36 +132,36 @@ model Challenge {
   revisionFrequencyUnitOfTime      String 
   includeRevisionBodyPhotos        Boolean
   includeRevisionBodyWeight        Boolean
-  includeRevisionBodyMeasurements  Boolean
+  includeRevisionBodyParts         Boolean
   includeDietLog                   Boolean
   monthlyCheatMeals                Int
   includeWeightGoal                Boolean
-  includeMeasurementGoals          Boolean
+  includeBodyPartGoals             Boolean
   status                           ChallengeStatus
   weightGoal                       WeightGoal
-  measurementGoals                 MeasurementGoal[]
+  bodyPartGoals                    BodyPartGoal[]
   weeklyTrainingDays               WeekDay[]  
 
   createdAt                        DateTime @default(now())
   updatedAt                        DateTime @updatedAt  
   
+  revisions                        Revision[]
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// model BodyPart {
-//   id   String   @id @default(auto()) @map("_id") @db.ObjectId
-//   name String   @unique
+model Revision {
+  id                               String @id @default(auto()) @map("_id") @db.ObjectId
+  challengeId                      String @db.ObjectId
+  date                             DateTime
+  frontPhoto                       String?
+  sidePhoto                        String?
+  backPhoto                        String?
+  weight                           Float?
+  measurements                     Measurement[]
 
-//   challenges ChallengeBodyPart[]
-// }
+  createdAt                        DateTime @default(now())
+  updatedAt                        DateTime @updatedAt  
 
-// model ChallengeBodyPart {
-//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-//   challengeId String   @db.ObjectId
-//   bodyPartId  String   @db.ObjectId
-  
-//   challenge   Challenge @relation(fields: [challengeId], references: [id])
-//   bodyPart    BodyPart  @relation(fields: [bodyPartId], references: [id])
-
-//   @@unique([challengeId, bodyPartId])
-// }
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+}

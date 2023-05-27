@@ -47,26 +47,26 @@ export async function POST (req: Request) {
         revisionFrequencyUnitOfTime: body.revisionFrequencyUnitOfTime,
         includeRevisionBodyPhotos: body.includeRevisionBodyPhotos,
         includeRevisionBodyWeight: body.includeRevisionBodyWeight,
-        includeRevisionBodyMeasurements: body.includeRevisionBodyMeasurements,
+        includeRevisionBodyParts: body.includeRevisionBodyParts,
         includeDietLog: body.includeDietLog,
         monthlyCheatMeals: body.monthlyCheatMeals,
         includeWeightGoal: body.includeWeightGoal,
-        includeMeasurementGoals: body.includeMeasurementGoals,
+        includeBodyPartGoals: body.includeBodyPartGoals,
         weightGoal: body.weightGoal,
-        measurementGoals: body.measurementGoals,
+        bodyPartGoals: body.bodyPartGoals,
         weeklyTrainingDays: body.weeklyTrainingDays,
         createdAt: body.createdAt,
         updatedAt: body.updatedAt,
         userId: session.user.id
-      },
-      select: {
-        id: true
       }
+      // select: {
+      //   id: true
+      // }
     })
 
     return new Response(JSON.stringify(challenge))
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 })
     }

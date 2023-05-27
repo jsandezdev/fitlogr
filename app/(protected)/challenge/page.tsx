@@ -18,47 +18,13 @@ import { prisma } from '@/lib/prisma'
 export default async function ChallengePage () {
   const session = await getServerSession(authOptions)
 
-  if (!session) {
-    return new Response('Unauthorized', { status: 401 })
-  }
+  if (!session) return new Response('Unauthorized', { status: 401 })
 
   const challenges = await prisma.challenge.findMany({
     where: {
       userId: session.user.id
     }
   })
-
-  // const challenges = await getData()
-
-  // async function getData () {
-  //   try {
-  //     const res = await fetch(`${process.env.HOST}/api/challenge`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authentication: 'Bearer ' + 'getToken()'
-  //       }
-  //     })
-
-  //     console.log('res.ok -> ', res.ok)
-
-  //     const data = await res.json()
-  //     console.log(data)
-
-  //     // if (!res.ok) {
-  //     //   throw new Error('Failed to fetch data')
-  //     // }
-
-  //     return data
-  //   } catch (error) {
-  //     console.log(error)
-  //     toast({
-  //       title: 'Error',
-  //       description: 'Friday, February 10, 2023 at 5:57 PM'
-  //     })
-  //     return []
-  //   }
-  // }
 
   return (
     <>
@@ -76,7 +42,7 @@ export default async function ChallengePage () {
           {challenges.map((challenge) => (
             <TableRow key={challenge.id}>
               <TableCell className="font-medium">
-                <Link href={`/challenge/${challenge.id}`}>{challenge.name}</Link>
+                <Link href={`/challenge/${challenge.id}/dashboard`}>{challenge.name}</Link>
               </TableCell>
             </TableRow>
           ))}

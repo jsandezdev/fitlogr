@@ -21,7 +21,7 @@ export enum GoalType {
   Lose = 'Lose'
 }
 
-export enum Measurement {
+export enum BodyPart {
   Neck = 'Neck',
   Shoulders = 'Shoulders',
   Chest = 'Chest',

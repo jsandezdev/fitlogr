@@ -17,9 +17,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { toast } from '@/components/ui/use-toast'
-import { GoalType, Measurement, UnitOfTime, WeekDay } from '@/lib/config'
+import { BodyPart, GoalType, UnitOfTime, WeekDay } from '@/lib/config'
 import { cn } from '@/lib/utils'
-import { measurementGoalSchema } from '@/lib/validations/measurementGoal.schema'
+import { bodyPartGoalSchema } from '@/lib/validations/bodyPartGoal.schema'
 import { unitOfTimeSchema } from '@/lib/validations/unitOfTime.schema'
 import { weekDaySchema } from '@/lib/validations/weekDay.schema'
 import { weightGoalSchema } from '@/lib/validations/weightGoal.schema'
@@ -32,16 +32,16 @@ const newChallengeFormSchema = z.object({
   revisionFrequencyUnitOfTime: unitOfTimeSchema,
   includeRevisionBodyPhotos: z.boolean(),
   includeRevisionBodyWeight: z.boolean(),
-  includeRevisionBodyMeasurements: z.boolean(),
+  includeRevisionBodyParts: z.boolean(),
   weeklyTrainingDays: z.array(weekDaySchema).refine((value) => value.some((item) => item), {
     message: 'You have to select at least one item.'
   }),
   includeDietLog: z.boolean(),
   monthlyCheatMeals: z.number(),
   includeWeightGoal: z.boolean(),
-  includeMeasurementGoals: z.boolean(),
+  includeBodyPartGoals: z.boolean(),
   weightGoal: weightGoalSchema,
-  measurementGoals: z.array(measurementGoalSchema)
+  bodyPartGoals: z.array(bodyPartGoalSchema)
 })
 
 type NewChallengeFormValues = z.infer<typeof newChallengeFormSchema>
@@ -54,63 +54,63 @@ const defaultValues: Partial<NewChallengeFormValues> = {
   revisionFrequencyUnitOfTime: UnitOfTime.Week,
   includeRevisionBodyWeight: false,
   includeRevisionBodyPhotos: false,
-  includeRevisionBodyMeasurements: false,
+  includeRevisionBodyParts: false,
   weeklyTrainingDays: [WeekDay.Monday, WeekDay.Wednesday, WeekDay.Friday],
   includeDietLog: false,
   monthlyCheatMeals: 4,
   includeWeightGoal: true,
-  includeMeasurementGoals: false,
+  includeBodyPartGoals: false,
   weightGoal: {
     amount: 1,
     frequencyAmount: 1,
     frequencyUnitOfTime: UnitOfTime.Month,
     goalType: GoalType.Lose
   },
-  measurementGoals: [
+  bodyPartGoals: [
     {
-      measurement: Measurement.Bicep,
+      bodyPart: BodyPart.Bicep,
       amount: 0.5,
       frequencyAmount: 1,
       frequencyUnitOfTime: UnitOfTime.Week,
       goalType: GoalType.Gain
     },
     {
-      measurement: Measurement.Chest,
+      bodyPart: BodyPart.Chest,
       amount: 1,
       frequencyAmount: 2,
       frequencyUnitOfTime: UnitOfTime.Week,
       goalType: GoalType.Gain
     },
     {
-      measurement: Measurement.Hips,
+      bodyPart: BodyPart.Hips,
       amount: 1,
       frequencyAmount: 2,
       frequencyUnitOfTime: UnitOfTime.Week,
       goalType: GoalType.Gain
     },
     {
-      measurement: Measurement.Neck,
+      bodyPart: BodyPart.Neck,
       amount: 1,
       frequencyAmount: 2,
       frequencyUnitOfTime: UnitOfTime.Week,
       goalType: GoalType.Gain
     },
     {
-      measurement: Measurement.Shoulders,
+      bodyPart: BodyPart.Shoulders,
       amount: 1,
       frequencyAmount: 2,
       frequencyUnitOfTime: UnitOfTime.Week,
       goalType: GoalType.Gain
     },
     {
-      measurement: Measurement.Thigh,
+      bodyPart: BodyPart.Thigh,
       amount: 1,
       frequencyAmount: 2,
       frequencyUnitOfTime: UnitOfTime.Week,
       goalType: GoalType.Gain
     },
     {
-      measurement: Measurement.Waist,
+      bodyPart: BodyPart.Waist,
       amount: 1,
       frequencyAmount: 2,
       frequencyUnitOfTime: UnitOfTime.Week,
@@ -127,8 +127,8 @@ export const NewChallengeForm = () => {
     defaultValues
   })
 
-  const { fields: measurementGoalsFields } = useFieldArray({
-    name: 'measurementGoals',
+  const { fields: bodyPartGoalsFields } = useFieldArray({
+    name: 'bodyPartGoals',
     control: form.control
   })
 
@@ -268,7 +268,7 @@ export const NewChallengeForm = () => {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
+                      date < new Date()
                     }
                     initialFocus
                   />
@@ -365,12 +365,12 @@ export const NewChallengeForm = () => {
             />
             <FormField
               control={form.control}
-              name="includeRevisionBodyMeasurements"
+              name="includeRevisionBodyParts"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                      includeRevisionBodyMeasurements
+                      includeRevisionBodyParts
                     </FormLabel>
                     <FormDescription>
                       Receive emails for friend requests, follows, and more.
@@ -503,12 +503,12 @@ export const NewChallengeForm = () => {
             />
             <FormField
               control={form.control}
-              name="includeMeasurementGoals"
+              name="includeBodyPartGoals"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                    includeMeasurementGoals
+                    includeBodyPartGoals
                     </FormLabel>
                     <FormDescription>
                       Receive emails about new products, features, and more.
@@ -604,14 +604,14 @@ export const NewChallengeForm = () => {
           />
         </div>
 
-        <div className={!form.getValues().includeMeasurementGoals ? 'hidden' : '' }>
-          <h3 className="mb-4 text-lg font-medium">Measurement goals</h3>
-          { measurementGoalsFields.map((field, index) => (
-            <div key={'measurementGoal_' + index}>
-              <p>{field.measurement}</p>
+        <div className={!form.getValues().includeBodyPartGoals ? 'hidden' : '' }>
+          <h3 className="mb-4 text-lg font-medium">BodyPart goals</h3>
+          { bodyPartGoalsFields.map((field, index) => (
+            <div key={'bodyPartGoal_' + index}>
+              <p>{field.bodyPart}</p>
               <FormField
                 control={form.control}
-                name={`measurementGoals.${index}.goalType`}
+                name={`bodyPartGoals.${index}.goalType`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>goalType</FormLabel>
@@ -622,7 +622,7 @@ export const NewChallengeForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        { (Object.keys(GoalType) as Array<GoalType>).map((goalType, index) => <SelectItem key={`measurementGoals.${index}_goalType_${goalType}`} value={goalType}>{goalType}</SelectItem>)}
+                        { (Object.keys(GoalType) as Array<GoalType>).map((goalType, index) => <SelectItem key={`bodyPartGoals.${index}_goalType_${goalType}`} value={goalType}>{goalType}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormDescription>
@@ -634,7 +634,7 @@ export const NewChallengeForm = () => {
               />
               <FormField
                 control={form.control}
-                name={`measurementGoals.${index}.amount`}
+                name={`bodyPartGoals.${index}.amount`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>amount</FormLabel>
@@ -648,7 +648,7 @@ export const NewChallengeForm = () => {
               />
               <FormField
                 control={form.control}
-                name={`measurementGoals.${index}.frequencyAmount`}
+                name={`bodyPartGoals.${index}.frequencyAmount`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>frequencyAmount</FormLabel>
@@ -662,7 +662,7 @@ export const NewChallengeForm = () => {
               />
               <FormField
                 control={form.control}
-                name={`measurementGoals.${index}.frequencyUnitOfTime`}
+                name={`bodyPartGoals.${index}.frequencyUnitOfTime`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>frequencyUnitOfTime</FormLabel>
@@ -673,7 +673,7 @@ export const NewChallengeForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`measurementGoals.${index}_frequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
+                        { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`bodyPartGoals.${index}_frequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <FormDescription>
@@ -687,15 +687,20 @@ export const NewChallengeForm = () => {
           ))}
         </div>
 
-        {/* <Button type="submit">Submit</Button> */}
         <Button
           type="submit"
           disabled={isLoading}
         >
-          {isLoading && (
-            <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          <span>Save</span>
+          { isLoading
+            ? (
+              <>
+                <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
+                <span>Loading</span>
+              </>
+            )
+            : (
+              <span>Save</span>
+            )}
         </Button>
       </form>
     </Form>
