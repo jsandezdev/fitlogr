@@ -53,6 +53,12 @@ enum UnitOfTime {
   Year
 }
 
+enum ChallengeStatus {
+  Active
+  Canceled
+  Finished
+}
+
 type MeasurementGoal {
   measurement         Measurement
   goalType            GoalType
@@ -135,6 +141,7 @@ model Challenge {
   monthlyCheatMeals                Int
   includeWeightGoal                Boolean
   includeMeasurementGoals          Boolean
+  status                           ChallengeStatus
   weightGoal                       WeightGoal
   measurementGoals                 MeasurementGoal[]
   weeklyTrainingDays               WeekDay[]  

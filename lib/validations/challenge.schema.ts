@@ -1,14 +1,15 @@
 import * as z from 'zod'
 
+// import { challengeStatusSchema } from './challengeStatus.schema'
 import { measurementGoalSchema } from './measurementGoal.schema'
 import { unitOfTimeSchema } from './unitOfTime.schema'
-// import { userSchema } from './user.schema'
 import { weekDaySchema } from './weekDay.schema'
 import { weightGoalSchema } from './weightGoal.schema'
 
 export const challengeSchema = z.object({
   // id: z.string().optional(),
   name: z.string(),
+  // status: challengeStatusSchema,
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
   revisionFrequencyNumber: z.number(),

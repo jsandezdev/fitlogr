@@ -30,3 +30,9 @@ export enum Measurement {
   Hips = 'Hips',
   Thigh = 'Thigh',
 }
+
+export enum ChallengeStatus {
+  Active = 'Active',
+  Canceled = 'Canceled',
+  Finished = 'Finished'
+}

@@ -75,7 +75,9 @@ export default async function ChallengePage () {
         <TableBody>
           {challenges.map((challenge) => (
             <TableRow key={challenge.id}>
-              <TableCell className="font-medium">{challenge.name}</TableCell>
+              <TableCell className="font-medium">
+                <Link href={`/challenge/${challenge.id}`}>{challenge.name}</Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

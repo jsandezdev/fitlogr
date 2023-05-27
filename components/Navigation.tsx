@@ -2,11 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 import { LogoutButton } from './LogoutButton'
 
 export const Navigation = ({ navLinks }) => {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   return (
     <nav className='flex flex-row justify-start gap-2 align-middle border-b max-w-screen-xl mx-auto'>
@@ -23,7 +25,7 @@ export const Navigation = ({ navLinks }) => {
           </Link>
         )
       })}
-      <LogoutButton className='p-4' />
+      { session?.user && <LogoutButton className='p-4' /> }
     </nav>
   )
 }
