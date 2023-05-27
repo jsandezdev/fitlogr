@@ -12,25 +12,25 @@ interface Props {
 }
 
 export default async function Challenge ({ params }: Props) {
-  const session = await getServerSession(authOptions)
+  // const session = await getServerSession(authOptions)
 
-  if (!session) {
-    return new Response('Unauthorized', { status: 401 })
-  }
+  // if (!session) {
+  //   return new Response('Unauthorized', { status: 401 })
+  // }
 
-  const challenge = await prisma.challenge.findUnique({
-    where: {
-      id: params.id
-    }
-  })
+  // const challenge = await prisma.challenge.findUnique({
+  //   where: {
+  //     id: params.id
+  //   }
+  // })
 
-  if (!challenge || challenge.userId !== session.user.id) {
-    notFound()
-  }
+  // if (!challenge || challenge.userId !== session.user.id) {
+  //   notFound()
+  // }
 
   return (
     <>
-      <PageTitle>Challenge {challenge.name}</PageTitle>
+      <PageTitle>You should be redirected to dashboard</PageTitle>
     </>
   )
 }
