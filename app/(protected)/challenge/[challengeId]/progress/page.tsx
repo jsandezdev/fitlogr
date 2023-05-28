@@ -7,11 +7,11 @@ import { prisma } from '@/lib/prisma'
 
 interface Props {
   params: {
-    id: string
+    challengeId: string
   }
 }
 
-export default async function Settings ({ params }: Props) {
+export default async function Progress ({ params }: Props) {
   const session = await getServerSession(authOptions)
 
   if (!session) {
@@ -20,7 +20,7 @@ export default async function Settings ({ params }: Props) {
 
   const challenge = await prisma.challenge.findUnique({
     where: {
-      id: params.id
+      id: params.challengeId
     }
   })
 
@@ -30,7 +30,7 @@ export default async function Settings ({ params }: Props) {
 
   return (
     <>
-      <PageTitle>Settings</PageTitle>
+      <PageTitle>Progress</PageTitle>
     </>
   )
 }

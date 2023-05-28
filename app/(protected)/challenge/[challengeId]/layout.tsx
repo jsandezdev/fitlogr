@@ -11,7 +11,7 @@ import { MainNav } from './components/MainNav'
 
 interface Props {
   params: {
-    id: string
+    challengeId: string
   }
 }
 
@@ -30,7 +30,7 @@ export default async function ChallengeLayout ({
 
   const challenge = await prisma.challenge.findUnique({
     where: {
-      id: params.id
+      id: params.challengeId
     }
   })
 

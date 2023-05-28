@@ -66,7 +66,7 @@ export async function POST (req: Request) {
 
     return new Response(JSON.stringify(challenge))
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 })
     }
