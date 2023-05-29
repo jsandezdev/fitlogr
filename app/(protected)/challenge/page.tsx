@@ -2,18 +2,11 @@ import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 
 import { PageTitle } from '@/components/PageTitle'
-import { buttonVariants } from '@/components/ui/button'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+
+import { NewChallengeButton } from './components/NewChallengeButton'
 
 export default async function ChallengePage () {
   const session = await getServerSession(authOptions)
@@ -22,7 +15,7 @@ export default async function ChallengePage () {
 
   const challenges = await prisma.challenge.findMany({
     where: {
-      userId: session.user.id
+      userId: session?.user?.id
     }
   })
 
@@ -30,7 +23,7 @@ export default async function ChallengePage () {
     <>
       <PageTitle>Challenges</PageTitle>
       <div className='mb-4'>Hello! Number of challenges: {challenges.length}</div>
-      <Link href='/challenge/new' className={buttonVariants()}>New challenge</Link>
+      <NewChallengeButton />
       <Table>
         <TableCaption>A list of your recent challenges.</TableCaption>
         <TableHeader>
