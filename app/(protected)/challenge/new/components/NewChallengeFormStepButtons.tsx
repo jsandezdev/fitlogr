@@ -18,7 +18,7 @@ export const NewChallengeFormStepButtons = ({
         disabled={isLoading || !onPrevious}
         onClick={() => onPrevious?.()}
       >
-        <span>Previous</span>
+        <span>Anterior</span>
       </Button>
 
       <Button
@@ -26,7 +26,7 @@ export const NewChallengeFormStepButtons = ({
         disabled={isLoading}
       >
         {isLoading && <FaSpinner className="mr-2 h-4 w-4 animate-spin" /> }
-        <span>{ isLoading ? 'Loading' : 'Next' }</span>
+        <span>{ isLoading ? 'Cargando' : 'Siguiente' }</span>
       </Button>
     </div>
   )

@@ -1,12 +1,14 @@
 import { PageTitle } from '@/components/PageTitle'
 
-import { NewChallengeForm } from './NewChallengeForm'
+import { NewChallengeFormWizard } from './components/NewChallengeFormWizard'
 
 export default async function NewChallenge () {
   return (
     <>
-      <PageTitle>New challenge</PageTitle>
-      <NewChallengeForm/>
+      <div className='max-w-screen-sm mx-auto'>
+        <PageTitle>Nuevo reto</PageTitle>
+        <NewChallengeFormWizard/>
+      </div>
     </>
   )
 }

@@ -7,6 +7,10 @@ import { toast } from '@/components/ui/use-toast'
 
 import { NewChallengeStep1Form } from './NewChallengeStep1Form'
 import { NewChallengeStep2Form } from './NewChallengeStep2Form'
+import { NewChallengeStep3Form } from './NewChallengeStep3Form'
+import { NewChallengeStep4Form } from './NewChallengeStep4Form'
+import { NewChallengeStep5Form } from './NewChallengeStep5Form'
+import { NewChallengeStep6Form } from './NewChallengeStep6Form'
 
 type Step = {
   number: number,
@@ -15,9 +19,12 @@ type Step = {
 
 export const NewChallengeFormWizard = () => {
   const steps : Step[] = [
-    { number: 1, name: 'Duration' },
-    { number: 2, name: 'Revisions' }
-    // { number: 3, name: 'Training' }
+    { number: 1, name: 'Duración' },
+    { number: 2, name: 'Revisiones' },
+    { number: 3, name: 'Entrenamiento' },
+    { number: 4, name: 'Metas' },
+    { number: 5, name: 'Dieta' },
+    { number: 6, name: 'Nombre' }
   ]
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -74,13 +81,26 @@ export const NewChallengeFormWizard = () => {
     <>
       <Progress
         value={currentStep.number / steps.length * 100}
+        className='mb-6'
       />
-      <p className='text-2xl'>{ currentStep.name }</p>
+      <p className='text-2xl mb-6'>{ currentStep.name }</p>
       { currentStep.number === 1 && (
         <NewChallengeStep1Form onNext={goNextStep}/>
       ) }
       { currentStep.number === 2 && (
         <NewChallengeStep2Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      ) }
+      { currentStep.number === 3 && (
+        <NewChallengeStep3Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      ) }
+      { currentStep.number === 4 && (
+        <NewChallengeStep4Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      ) }
+      { currentStep.number === 5 && (
+        <NewChallengeStep5Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      ) }
+      { currentStep.number === 6 && (
+        <NewChallengeStep6Form onNext={goNextStep} onPrevious={goPreviousStep}/>
       ) }
     </>
   )
