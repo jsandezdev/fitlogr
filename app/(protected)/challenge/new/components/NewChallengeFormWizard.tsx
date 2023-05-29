@@ -33,13 +33,14 @@ export const NewChallengeFormWizard = () => {
   const [formData, setFormData] = useNewChallengeFormState()
 
   const goNextStep = (stepFormData: any) => {
-    setFormData((prev) => ({ ...prev, ...stepFormData }))
+    const newFormData = { ...formData, ...stepFormData }
+    setFormData(newFormData)
 
     if (currentStep.number < steps.length) {
       const newStep: Step | undefined = steps.find((step) => step.number === currentStep.number + 1)
       if (newStep) setCurrentStep(newStep)
     } else {
-      saveChallenge()
+      saveChallenge(newFormData)
     }
   }
 
@@ -50,7 +51,7 @@ export const NewChallengeFormWizard = () => {
     }
   }
 
-  const saveChallenge = async () => {
+  const saveChallenge = async (challenge: any) => {
     if (isLoading) return null
 
     setIsLoading(true)
@@ -60,7 +61,7 @@ export const NewChallengeFormWizard = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(formData)
+      body: JSON.stringify(challenge)
     })
 
     setIsLoading(false)
