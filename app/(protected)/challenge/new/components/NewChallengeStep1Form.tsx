@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -22,6 +22,7 @@ import { UnitOfTime } from '@/lib/config'
 import { cn } from '@/lib/utils'
 import { challengeDurationSchema } from '@/lib/validations/challengeDuration.schema'
 
+import { useNewChallengeFormState } from '../hooks/useNewChallengeFormState'
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 
 const challengeDurations = [
@@ -71,21 +72,36 @@ const challengeDurations = [
 
 const newChallengeStep1FormSchema = z.object({
   duration: challengeDurationSchema,
-  startDate: z.date(),
-  endDate: z.date()
+  startDate: z.coerce.date().nullable(),
+  endDate: z.coerce.date().nullable()
+}).superRefine((values, ctx) => {
+  if (values.duration.id === 'other') {
+    if (!values.startDate) {
+      ctx.addIssue({
+        message: 'Campo obligatorio',
+        code: z.ZodIssueCode.custom,
+        path: ['startDate']
+      })
+    }
+    if (!values.endDate) {
+      ctx.addIssue({
+        message: 'Campo obligatorio',
+        code: z.ZodIssueCode.custom,
+        path: ['endDate']
+      })
+    }
+    if (values.startDate && values.endDate && values.startDate >= values.endDate) {
+      ctx.addIssue({
+        message: 'Debe ser mayor que la fecha de inicio',
+        code: z.ZodIssueCode.custom,
+        path: ['endDate']
+      })
+    }
+  }
+  return true
 })
 
 type NewChallengeStep1FormValues = z.infer<typeof newChallengeStep1FormSchema>
-
-const startDate = new Date()
-const endDate = new Date()
-endDate.setFullYear(startDate.getFullYear() + 1)
-
-const defaultValues: Partial<NewChallengeStep1FormValues> = {
-  duration: challengeDurations[0],
-  startDate,
-  endDate
-}
 
 type Props = {
   onNext: (formData: NewChallengeStep1FormValues) => void;
@@ -93,11 +109,24 @@ type Props = {
 
 export const NewChallengeStep1Form = ({ onNext }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [showOtherDuration, setShowOtherDuration] = useState<boolean>(false)
+  const [newChallengeData, setNewChallengeData] = useNewChallengeFormState()
+
+  const defaultValues: Partial<NewChallengeStep1FormValues> = {
+    duration: newChallengeData.duration || challengeDurations[0],
+    startDate: newChallengeData.startDate || null,
+    endDate: newChallengeData.endDate || null
+  }
 
   const form = useForm<NewChallengeStep1FormValues>({
     resolver: zodResolver(newChallengeStep1FormSchema),
     defaultValues
   })
+
+  useEffect(() => {
+    // To prevent hydration problems with date inputs as defaultValues
+    if (!form.getValues().startDate) form.setValue('startDate', new Date())
+  }, [])
 
   async function onSubmit (formData: NewChallengeStep1FormValues) {
     setIsLoading(true)
@@ -126,7 +155,10 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
             <FormItem>
               <FormLabel>Duración</FormLabel>
               <Select
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  field.onChange(value)
+                  setShowOtherDuration(value === 'other')
+                }}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -145,12 +177,12 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
           )}
         />
 
-        <div className={`flex flex-row gap-2 ${form.getValues().duration?.id === 'other' ? '' : 'hidden'}`}>
+        <div className={`flex flex-row gap-2 ${showOtherDuration ? '' : 'hidden'}`}>
           <FormField
             control={form.control}
             name="startDate"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-full">
                 <FormLabel>Desde</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -158,16 +190,16 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[240px] pl-3 text-left font-normal',
+                          'pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value
                           ? (
-                            format(field.value, 'PPP')
+                            format(field.value, 'dd/MM/yyyy')
                           )
                           : (
-                            <span>Pick a date</span>
+                            <span>Selecciona una fecha</span>
                           )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -175,6 +207,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
+                      weekStartsOn={1}
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
@@ -194,7 +227,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
             control={form.control}
             name="endDate"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col w-full">
                 <FormLabel>Hasta</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -202,16 +235,16 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-[240px] pl-3 text-left font-normal',
+                          'pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value
                           ? (
-                            format(field.value, 'PPP')
+                            format(field.value, 'dd/MM/yyyy')
                           )
                           : (
-                            <span>Pick a date</span>
+                            <span>Selecciona una fecha</span>
                           )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -219,6 +252,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
+                      weekStartsOn={1}
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}

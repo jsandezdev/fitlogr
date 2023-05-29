@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Progress } from '@/components/ui/progress'
 import { toast } from '@/components/ui/use-toast'
 
+import { useNewChallengeFormState } from '../hooks/useNewChallengeFormState'
 import { NewChallengeStep1Form } from './NewChallengeStep1Form'
 import { NewChallengeStep2Form } from './NewChallengeStep2Form'
 import { NewChallengeStep3Form } from './NewChallengeStep3Form'
@@ -29,10 +30,10 @@ export const NewChallengeFormWizard = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [currentStep, setCurrentStep] = useState(steps[0])
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useNewChallengeFormState()
 
   const goNextStep = (stepFormData: any) => {
-    setFormData((prev) => ({ ...prev, stepFormData }))
+    setFormData((prev) => ({ ...prev, ...stepFormData }))
 
     if (currentStep.number < steps.length) {
       const newStep: Step | undefined = steps.find((step) => step.number === currentStep.number + 1)
@@ -84,24 +85,29 @@ export const NewChallengeFormWizard = () => {
         className='mb-6'
       />
       <p className='text-2xl mb-6'>{ currentStep.name }</p>
-      { currentStep.number === 1 && (
+      <section className={ currentStep.number === 1 ? '' : 'hidden'}>
         <NewChallengeStep1Form onNext={goNextStep}/>
-      ) }
-      { currentStep.number === 2 && (
+      </section>
+      <section className={ currentStep.number === 2 ? '' : 'hidden'}>
         <NewChallengeStep2Form onNext={goNextStep} onPrevious={goPreviousStep}/>
-      ) }
-      { currentStep.number === 3 && (
+      </section>
+      <section className={ currentStep.number === 3 ? '' : 'hidden'}>
         <NewChallengeStep3Form onNext={goNextStep} onPrevious={goPreviousStep}/>
-      ) }
-      { currentStep.number === 4 && (
+      </section>
+      <section className={ currentStep.number === 4 ? '' : 'hidden'}>
         <NewChallengeStep4Form onNext={goNextStep} onPrevious={goPreviousStep}/>
-      ) }
-      { currentStep.number === 5 && (
+      </section>
+      <section className={ currentStep.number === 5 ? '' : 'hidden'}>
         <NewChallengeStep5Form onNext={goNextStep} onPrevious={goPreviousStep}/>
-      ) }
-      { currentStep.number === 6 && (
+      </section>
+      <section className={ currentStep.number === 6 ? '' : 'hidden'}>
         <NewChallengeStep6Form onNext={goNextStep} onPrevious={goPreviousStep}/>
-      ) }
+      </section>
+
+      <div>
+        <p>Form data:</p>
+        <pre>{JSON.stringify(formData, null, 2)}</pre>
+      </div>
     </>
   )
 }
