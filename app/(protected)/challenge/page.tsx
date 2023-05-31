@@ -7,7 +7,6 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-
 export default async function ChallengePage () {
   const session = await getServerSession(authOptions)
 

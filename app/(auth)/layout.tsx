@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import { Navigation } from '@/components/Navigation'
+import { Toaster } from '@/components/ui/Toaster'
 
 const navLinks = [
   {
@@ -25,8 +26,9 @@ export default function AuthLayout ({
         <Link href='/login' className='p-4'>Login</Link>
         <Link href='/register' className='p-4'>Register</Link>
       </div> */}
-      <Navigation navLinks={navLinks} />
+      {/* <Navigation navLinks={navLinks} /> */}
       {children}
+      <Toaster />
     </>
   )
 }
