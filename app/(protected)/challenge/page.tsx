@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 
-import { PageTitle } from '@/components/PageTitle'
+// import { PageTitle } from '@/components/PageTitle'
 import { buttonVariants } from '@/components/ui/button'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { authOptions } from '@/lib/auth'
@@ -20,7 +20,7 @@ export default async function ChallengePage () {
 
   return (
     <>
-      <PageTitle>Challenges</PageTitle>
+      {/* <PageTitle>Challenges</PageTitle> */}
       <div className='mb-4'>Hello! Number of challenges: {challenges.length}</div>
       {/* <NewChallengeButton /> */}
       <Link className={buttonVariants({ variant: 'outline' })} href='/challenge/new'>Nuevo reto</Link>

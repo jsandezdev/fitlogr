@@ -10,19 +10,19 @@ export function MainNav ({
   const pathname = usePathname()
   const navLinks = [
     {
-      name: 'Dashboard',
+      name: 'Panel de control',
       href: `/challenge/${challengeId}/dashboard`
     },
     {
-      name: 'Revision',
+      name: 'Revisiones',
       href: `/challenge/${challengeId}/revision`
     },
     {
-      name: 'Progress',
+      name: 'Progreso',
       href: `/challenge/${challengeId}/progress`
     },
     {
-      name: 'Settings',
+      name: 'Configuración',
       href: `/challenge/${challengeId}/settings`
     }
   ]

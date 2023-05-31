@@ -9,7 +9,7 @@ export const LogoutButton = ({ className, ...props }) => {
       type='button'
       onClick={() => signOut()}
     >
-      Sign Out
+      Cerrar sesión
     </button>
   )
 }

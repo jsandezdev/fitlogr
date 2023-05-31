@@ -10,7 +10,7 @@ export default async function Dashboard () {
 
   return (
     <main className="text">
-      <PageTitle>Dashboard</PageTitle>
+      <PageTitle>Inicio</PageTitle>
     </main>
   )
 }

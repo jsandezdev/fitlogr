@@ -11,7 +11,7 @@ export const Navigation = ({ navLinks }) => {
   const { data: session } = useSession()
 
   return (
-    <nav className='flex flex-row justify-start gap-2 align-middle border-b max-w-screen-xl mx-auto'>
+    <nav className='flex flex-row justify-start gap-2 align-middle max-w-screen-xl mx-auto'>
       {navLinks.map((link) => {
         const isActive = pathname.startsWith(link.href)
 

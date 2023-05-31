@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth'
 
-import { PageTitle } from '@/components/PageTitle'
+// import { PageTitle } from '@/components/PageTitle'
 import { authOptions } from '@/lib/auth'
 
 export default async function Profile () {
@@ -9,7 +9,7 @@ export default async function Profile () {
 
   return (
     <section>
-      <PageTitle>Profile</PageTitle>
+      {/* <PageTitle>Perfil</PageTitle> */}
       <div className="max-w-4xl mx-auto bg-ct-dark-100 rounded-md h-[20rem] flex justify-center items-center">
         {!user
           ? (
@@ -25,7 +25,7 @@ export default async function Profile () {
                 />
               </div>
               <div className="mt-8">
-                <p className="mb-3">Name: {user.name}</p>
+                <p className="mb-3">Nombre: {user.name}</p>
                 <p className="mb-3">Email: {user.email}</p>
               </div>
             </div>
