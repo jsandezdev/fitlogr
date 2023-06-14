@@ -1,6 +1,7 @@
-import { PageTitle } from '@/components/PageTitle'
+import { PageHeader } from '@/components/PageHeader'
+import { ProtectedPage } from '@/components/ProtectedPage'
 
-import { NewRevisionForm } from './NewRevisionForm'
+import { NewRevisionForm } from './components/NewRevisionForm'
 
 type Props = {
   params: {
@@ -10,9 +11,11 @@ type Props = {
 
 export default async function NewRevision ({ params } : Props) {
   return (
-    <>
-      <PageTitle>New revision</PageTitle>
-      <NewRevisionForm challengeId={params.challengeId}/>
-    </>
+    <ProtectedPage>
+      <PageHeader heading="Nueva revisión" text="Introduce a continuación los datos de la revisión" />
+      <div>
+        <NewRevisionForm challengeId={params.challengeId}/>
+      </div>
+    </ProtectedPage>
   )
 }

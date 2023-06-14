@@ -2,26 +2,22 @@ import { notFound } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import React from 'react'
 
-import { PageTitle } from '@/components/PageTitle'
-import { Toaster } from '@/components/ui/Toaster'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-import { MainNav } from './components/MainNav'
+import { ChallengeNav } from './components/ChallengeNav'
 
 interface Props {
   params: {
     challengeId: string
-  }
+  },
+  children: React.ReactNode
 }
 
 export default async function ChallengeLayout ({
   params,
   children
-}: {
-  children: React.ReactNode,
-  params: Props
-}) {
+}: Props) {
   const session = await getServerSession(authOptions)
 
   if (!session) {
@@ -34,22 +30,18 @@ export default async function ChallengeLayout ({
     }
   })
 
-  if (!challenge || challenge.userId !== session.user.id) {
+  if (!challenge || challenge.userId !== session.user?.id) {
     notFound()
   }
 
   return (
-    <>
-      <main>
-        <div className='flex flex-row justify-between align-middle'>
-          <PageTitle>{challenge.name}</PageTitle>
-          <MainNav challengeId={challenge.id}/>
-        </div>
-        <div className='max-w-screen-xl mx-auto py-4'>
-          {children}
-        </div>
+    <div className="grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
+      <aside className="hidden w-[200px] flex-col md:flex">
+        <ChallengeNav challengeId={params.challengeId} />
+      </aside>
+      <main className="flex w-full flex-1 flex-col overflow-hidden">
+        {children}
       </main>
-      <Toaster />
-    </>
+    </div>
   )
 }

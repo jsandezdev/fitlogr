@@ -10,10 +10,10 @@ export default function ProtectedLayout ({
 }) {
   return (
     <>
-      <main>
+      <main className="flex min-h-screen flex-col space-y-6">
         {/* @ts-expect-error Server Component */}
         <Header />
-        <div className='max-w-screen-xl mx-auto p-4'>
+        <div className='container'>
           {children}
         </div>
       </main>

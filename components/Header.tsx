@@ -1,29 +1,35 @@
-// import { getServerSession } from 'next-auth'
-// import { authOptions } from '@/lib/auth'
-import { Navigation } from './Navigation'
+import { getServerSession } from 'next-auth'
+
+import { MainNav } from '@/components/MainNav'
+import { UserAccountNav } from '@/components/UserAccountNav'
+import { authOptions } from '@/lib/auth'
 
 const navLinks = [
   {
-    name: 'Inicio',
+    title: 'Inicio',
     href: '/dashboard'
   },
   {
-    name: 'Retos',
+    title: 'Retos',
     href: '/challenge'
-  },
-  {
-    name: 'Perfil',
-    href: '/profile'
   }
 ]
 
 export const Header = async () => {
-  // const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions)
 
   return (
-    <header>
-      {/* <p className='bg-blue-800 text-white text-center p-2'>Logged in as {session?.user?.email}</p> */}
-      <Navigation navLinks={navLinks} />
+    <header className='sticky top-0 z-40 border-b bg-background'>
+      <div className="container flex h-16 items-center justify-between py-4">
+        <MainNav items={navLinks} />
+        <UserAccountNav
+          user={{
+            name: session?.user?.name,
+            image: session?.user?.image,
+            email: session?.user?.email
+          }}
+        />
+      </div>
     </header>
   )
 }

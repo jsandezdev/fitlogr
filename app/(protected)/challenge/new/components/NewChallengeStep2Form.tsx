@@ -8,28 +8,67 @@ import * as z from 'zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
 import { UnitOfTime } from '@/lib/config'
 import { unitOfTimeSchema } from '@/lib/validations/unitOfTime.schema'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 
+const revisionFrequencies = [
+  {
+    id: '1w',
+    label: 'Cada semana',
+    unitOfTime: UnitOfTime.Week,
+    amount: 1
+  },
+  {
+    id: '2w',
+    label: 'Cada 2 semanas',
+    unitOfTime: UnitOfTime.Week,
+    amount: 2
+  },
+  {
+    id: '1m',
+    label: 'Una vez al mes',
+    unitOfTime: UnitOfTime.Month,
+    amount: 1
+  },
+  {
+    id: 'other',
+    label: 'Otro',
+    unitOfTime: null,
+    amount: 0
+  }
+]
+
 const newChallengeStep2FormSchema = z.object({
-  revisionFrequencyNumber: z.number(),
-  revisionFrequencyUnitOfTime: unitOfTimeSchema,
-  includeRevisionBodyPhotos: z.boolean(),
-  includeRevisionBodyWeight: z.boolean(),
-  includeRevisionBodyParts: z.boolean()
+  revisionFrequencyId: z.string(),
+  revisionFrequencyNumber: z.number().nullable(),
+  revisionFrequencyUnitOfTime: unitOfTimeSchema.nullable()
+}).superRefine((values, ctx) => {
+  if (values.revisionFrequencyId === 'other') {
+    if (!values.revisionFrequencyNumber) {
+      ctx.addIssue({
+        message: 'Campo obligatorio',
+        code: z.ZodIssueCode.custom,
+        path: ['revisionFrequencyNumber']
+      })
+    }
+    if (!values.revisionFrequencyUnitOfTime) {
+      ctx.addIssue({
+        message: 'Campo obligatorio',
+        code: z.ZodIssueCode.custom,
+        path: ['revisionFrequencyUnitOfTime']
+      })
+    }
+  }
+  return true
 })
 
 type NewChallengeStep2FormValues = z.infer<typeof newChallengeStep2FormSchema>
 
 const defaultValues: Partial<NewChallengeStep2FormValues> = {
   revisionFrequencyNumber: 1,
-  revisionFrequencyUnitOfTime: UnitOfTime.Week,
-  includeRevisionBodyWeight: false,
-  includeRevisionBodyPhotos: false,
-  includeRevisionBodyParts: false
+  revisionFrequencyUnitOfTime: UnitOfTime.Week
 }
 
 type Props = {
@@ -39,6 +78,7 @@ type Props = {
 
 export const NewChallengeStep2Form = ({ onNext, onPrevious }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [showOtherRevisionFrequency, setShowOtherRevisionFrequency] = useState<boolean>(false)
 
   const form = useForm<NewChallengeStep2FormValues>({
     resolver: zodResolver(newChallengeStep2FormSchema),
@@ -57,110 +97,71 @@ export const NewChallengeStep2Form = ({ onNext, onPrevious }: Props) => {
 
         <FormField
           control={form.control}
-          name="revisionFrequencyNumber"
+          name="revisionFrequencyId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>revisionFrequencyNumber</FormLabel>
-              <FormControl>
-                <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="revisionFrequencyUnitOfTime"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>revisionFrequencyUnitOfTime</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value)
+                  setShowOtherRevisionFrequency(value === 'other')
+                  if (value !== 'other') {
+                    form.handleSubmit(onSubmit)()
+                  }
+                }}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Selecciona uno..." />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`revisionFrequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
+                  { revisionFrequencies.map((d) => (
+                    <SelectItem key={`revision_frequency_${d.id}`} value={d.id}>{d.label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <FormDescription></FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div>
-          <h3 className="mb-4 text-lg font-medium">Email Notifications</h3>
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="includeRevisionBodyWeight"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                    includeRevisionBodyWeight
-                    </FormLabel>
-                    <FormDescription>
-                      Receive emails about your account activity.
-                    </FormDescription>
-                  </div>
+        <div className={`flex flex-row gap-2 ${showOtherRevisionFrequency ? '' : 'hidden'}`}>
+          <FormField
+            control={form.control}
+            name="revisionFrequencyNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>revisionFrequencyNumber</FormLabel>
+                <FormControl>
+                  <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="revisionFrequencyUnitOfTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>revisionFrequencyUnitOfTime</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a verified email to display" />
+                    </SelectTrigger>
                   </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="includeRevisionBodyPhotos"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                    includeRevisionBodyPhotos
-                    </FormLabel>
-                    <FormDescription>
-                      Receive emails about new products, features, and more.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="includeRevisionBodyParts"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      includeRevisionBodyParts
-                    </FormLabel>
-                    <FormDescription>
-                      Receive emails for friend requests, follows, and more.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
+                  <SelectContent>
+                    { (Object.keys(UnitOfTime) as Array<UnitOfTime>).map((unitOfTime, index) => <SelectItem key={`revisionFrequencyUnitOfTime_${unitOfTime}`} value={unitOfTime}>{unitOfTime}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <NewChallengeFormStepButtons

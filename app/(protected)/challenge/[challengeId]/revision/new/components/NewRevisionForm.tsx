@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Revision } from '@prisma/client'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
@@ -17,6 +18,8 @@ import { toast } from '@/components/ui/use-toast'
 import { BodyPart } from '@/lib/config'
 import { cn } from '@/lib/utils'
 import { measurementSchema } from '@/lib/validations/measurement.schema'
+
+import { CopyDataFromLastRevisionButton } from './CopyDataFromLastRevisionButton'
 
 const newRevisionFormSchema = z.object({
   date: z.coerce.date(),
@@ -121,12 +124,17 @@ export const NewRevisionForm = ({ challengeId }: Props) => {
     // router.refresh()
   }
 
+  const handleCopyDataFromLastRevision = (lastRevision: Revision) => {
+    console.log(lastRevision)
+  }
+
   return (
     <Form {...form}>
-      <div>
+      <CopyDataFromLastRevisionButton challengeId={challengeId} onClick={handleCopyDataFromLastRevision} />
+      {/* <div>
         <p>Form Errors:</p>
         <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
-      </div>
+      </div> */}
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}

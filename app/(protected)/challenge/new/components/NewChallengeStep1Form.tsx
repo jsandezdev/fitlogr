@@ -20,7 +20,6 @@ import {
 } from '@/components/ui/select'
 import { UnitOfTime } from '@/lib/config'
 import { cn } from '@/lib/utils'
-import { challengeDurationSchema } from '@/lib/validations/challengeDuration.schema'
 
 import { useNewChallengeFormState } from '../hooks/useNewChallengeFormState'
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
@@ -71,11 +70,12 @@ const challengeDurations = [
 ]
 
 const newChallengeStep1FormSchema = z.object({
-  duration: challengeDurationSchema,
+  // duration: challengeDurationSchema,
+  durationId: z.string(),
   startDate: z.coerce.date().nullable(),
   endDate: z.coerce.date().nullable()
 }).superRefine((values, ctx) => {
-  if (values.duration.id === 'other') {
+  if (values.durationId === 'other') {
     if (!values.startDate) {
       ctx.addIssue({
         message: 'Campo obligatorio',
@@ -112,11 +112,12 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
   const [showOtherDuration, setShowOtherDuration] = useState<boolean>(false)
   const [newChallengeData, setNewChallengeData] = useNewChallengeFormState()
 
-  const defaultValues: Partial<NewChallengeStep1FormValues> = {
-    duration: newChallengeData.duration || challengeDurations[0],
+  const defaultValues = {
     startDate: newChallengeData.startDate || null,
     endDate: newChallengeData.endDate || null
   }
+
+  if (newChallengeData.durationId) defaultValues.durationId = newChallengeData.durationId
 
   const form = useForm<NewChallengeStep1FormValues>({
     resolver: zodResolver(newChallengeStep1FormSchema),
@@ -150,14 +151,16 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
 
         <FormField
           control={form.control}
-          name="duration.id"
+          name="durationId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Duración</FormLabel>
               <Select
                 onValueChange={(value) => {
                   field.onChange(value)
                   setShowOtherDuration(value === 'other')
+                  if (value !== 'other') {
+                    form.handleSubmit(onSubmit)()
+                  }
                 }}
                 defaultValue={field.value}
               >
@@ -209,7 +212,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                     <Calendar
                       weekStartsOn={1}
                       mode="single"
-                      selected={field.value}
+                      selected={field.value !== null ? field.value : undefined}
                       onSelect={field.onChange}
                       disabled={(date) =>
                         date < new Date('1900-01-01')
@@ -254,7 +257,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                     <Calendar
                       weekStartsOn={1}
                       mode="single"
-                      selected={field.value}
+                      selected={field.value !== null ? field.value : undefined}
                       onSelect={field.onChange}
                       disabled={(date) =>
                         date < new Date()

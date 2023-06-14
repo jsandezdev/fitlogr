@@ -1,7 +1,9 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 
-import { PageTitle } from '@/components/PageTitle'
+// import { PageHeader } from '@/components/PageHeader'
+// import { PageTitle } from '@/components/PageTitle'
+// import { ProtectedPage } from '@/components/ProtectedPage'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -24,13 +26,18 @@ export default async function Dashboard ({ params }: Props) {
     }
   })
 
-  if (!challenge || challenge.userId !== session.user.id) {
+  if (!challenge || challenge.userId !== session.user?.id) {
     notFound()
   }
 
-  return (
-    <>
-      <PageTitle>Dashboard</PageTitle>
-    </>
-  )
+  redirect(`/challenge/${params.challengeId}/revision`)
+
+  // return (
+  //   <ProtectedPage>
+  //     <PageHeader heading="Panel de control" />
+  //     <div>
+
+  //     </div>
+  //   </ProtectedPage>
+  // )
 }

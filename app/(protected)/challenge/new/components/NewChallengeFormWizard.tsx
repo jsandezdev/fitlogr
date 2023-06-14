@@ -12,6 +12,7 @@ import { NewChallengeStep3Form } from './NewChallengeStep3Form'
 import { NewChallengeStep4Form } from './NewChallengeStep4Form'
 import { NewChallengeStep5Form } from './NewChallengeStep5Form'
 import { NewChallengeStep6Form } from './NewChallengeStep6Form'
+import { NewChallengeStep7Form } from './NewChallengeStep7Form'
 
 type Step = {
   number: number,
@@ -20,12 +21,13 @@ type Step = {
 
 export const NewChallengeFormWizard = () => {
   const steps : Step[] = [
-    { number: 1, name: 'Duración' },
-    { number: 2, name: 'Revisiones' },
-    { number: 3, name: 'Entrenamiento' },
-    { number: 4, name: 'Metas' },
-    { number: 5, name: 'Dieta' },
-    { number: 6, name: 'Nombre' }
+    { number: 1, name: '¿Cuánto quieres que dure el reto?' },
+    { number: 2, name: '¿Cada cuánto tiempo quieres hacer las revisiones?' },
+    { number: 3, name: '¿Qué datos quieres registrar?' },
+    { number: 4, name: '¿Qué días entrenas a la semana?' },
+    { number: 5, name: '¿Cuáles son tus objetivos?' },
+    { number: 6, name: '¿Quieres controlar también la dieta?' },
+    { number: 7, name: 'Por último, ¿qué nombre quieres ponerle al reto?' }
   ]
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -68,14 +70,14 @@ export const NewChallengeFormWizard = () => {
 
     if (!response?.ok) {
       return toast({
-        title: 'Something went wrong.',
-        description: 'Your challenge was not created. Please try again.',
+        title: 'Algo ha ido mal.',
+        description: 'Tu reto no ha sido creado. Por favor, inténtalo de nuevo.',
         variant: 'destructive'
       })
     }
 
     toast({
-      description: 'Your challenge has been created.'
+      description: 'El reto ha sido creado.'
     })
   }
 
@@ -104,11 +106,14 @@ export const NewChallengeFormWizard = () => {
       <section className={ currentStep.number === 6 ? '' : 'hidden'}>
         <NewChallengeStep6Form onNext={goNextStep} onPrevious={goPreviousStep}/>
       </section>
+      <section className={ currentStep.number === 7 ? '' : 'hidden'}>
+        <NewChallengeStep7Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      </section>
 
-      <div>
+      {/* <div>
         <p>Form data:</p>
         <pre>{JSON.stringify(formData, null, 2)}</pre>
-      </div>
+      </div> */}
     </>
   )
 }

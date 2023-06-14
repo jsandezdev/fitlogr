@@ -1,11 +1,21 @@
 import './globals.css'
 
-import { Inter } from 'next/font/google'
+import { Inter, Roboto_Flex as RobotoFlex } from 'next/font/google'
 import React from 'react'
+
+import { cn } from '@/lib/utils'
 
 import { NextAuthProvider } from './providers'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans'
+})
+
+const roboto = RobotoFlex({
+  subsets: ['latin'],
+  variable: '--font-heading'
+})
 
 export const metadata = {
   title: 'Create Next App',
@@ -19,7 +29,14 @@ export default function RootLayout ({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          inter.variable,
+          roboto.variable
+        )}
+      // className={'min-h-screen ' + inter.className}
+      >
         <NextAuthProvider>
           {children}
         </NextAuthProvider>
