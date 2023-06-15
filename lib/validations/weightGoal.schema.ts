@@ -1,11 +1,19 @@
 import * as z from 'zod'
 
+import { goalFrequencySchema } from './goalFrequency.schema'
 import { goalTypeSchema } from './goalType.schema'
-import { unitOfTimeSchema } from './unitOfTime.schema'
 
 export const weightGoalSchema = z.object({
-  goalType: z.lazy(() => goalTypeSchema),
+  type: z.lazy(() => goalTypeSchema),
   amount: z.number(),
-  frequencyAmount: z.number(),
-  frequencyUnitOfTime: z.lazy(() => unitOfTimeSchema)
+  frequency: z.lazy(() => goalFrequencySchema)
+}).superRefine((values, ctx) => {
+  if (values.amount <= 0) {
+    ctx.addIssue({
+      message: 'El valor debe ser mayor que 0',
+      code: z.ZodIssueCode.custom,
+      path: ['amount']
+    })
+  }
+  return true
 })

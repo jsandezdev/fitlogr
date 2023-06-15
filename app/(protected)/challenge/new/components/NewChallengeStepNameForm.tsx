@@ -5,35 +5,35 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 
-const newChallengeStep7FormSchema = z.object({
+const newChallengeStepNameFormSchema = z.object({
   name: z.string()
 })
 
-type NewChallengeStep7FormValues = z.infer<typeof newChallengeStep7FormSchema>
+type NewChallengeStepNameFormValues = z.infer<typeof newChallengeStepNameFormSchema>
 
-const defaultValues: Partial<NewChallengeStep7FormValues> = {
-  name: 'My challenge'
+const defaultValues: Partial<NewChallengeStepNameFormValues> = {
+  name: ''
 }
 
 type Props = {
-  onNext: (formData: NewChallengeStep7FormValues) => void;
+  onNext: (formData: NewChallengeStepNameFormValues) => void;
   onPrevious: () => void;
 }
 
-export const NewChallengeStep7Form = ({ onNext, onPrevious }: Props) => {
+export const NewChallengeStepNameForm = ({ onNext, onPrevious }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const form = useForm<NewChallengeStep7FormValues>({
-    resolver: zodResolver(newChallengeStep7FormSchema),
+  const form = useForm<NewChallengeStepNameFormValues>({
+    resolver: zodResolver(newChallengeStepNameFormSchema),
     defaultValues
   })
 
-  async function onSubmit (formData: NewChallengeStep7FormValues) {
+  async function onSubmit (formData: NewChallengeStepNameFormValues) {
     setIsLoading(true)
     onNext(formData)
     setIsLoading(false)
@@ -41,14 +41,13 @@ export const NewChallengeStep7Form = ({ onNext, onPrevious }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>name</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

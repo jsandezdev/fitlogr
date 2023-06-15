@@ -6,6 +6,21 @@ export enum UnitOfTime {
   Year = 'Year'
 }
 
+export enum RevisionFrequency {
+  '1w' = '1w',
+  '2w' = '2w',
+  '1m' = '1m'
+}
+
+export enum ChallengeDuration {
+  '1m' = '1m',
+  '2m' = '2m',
+  '3m' = '3m',
+  '4m' = '4m',
+  '6m' = '6m',
+  '1y' = '1y'
+}
+
 export enum WeekDay {
   Monday = 'Monday',
   Tuesday = 'Tuesday',
@@ -19,6 +34,11 @@ export enum WeekDay {
 export enum GoalType {
   Gain = 'Gain',
   Lose = 'Lose'
+}
+
+export enum GoalFrequency {
+  Revision = 'Revision',
+  Total = 'Total'
 }
 
 export enum BodyPart {

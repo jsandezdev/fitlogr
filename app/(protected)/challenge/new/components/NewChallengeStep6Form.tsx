@@ -5,23 +5,18 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 
 const newChallengeStep6FormSchema = z.object({
-  includeDietLog: z.string(),
-  monthlyCheatMeals: z.number()
+  includeDietLog: z.string()
 })
 
 type NewChallengeStep6FormValues = z.infer<typeof newChallengeStep6FormSchema>
 
-const defaultValues: Partial<NewChallengeStep6FormValues> = {
-  includeDietLog: 'no',
-  monthlyCheatMeals: 4
-}
+const defaultValues: Partial<NewChallengeStep6FormValues> = {}
 
 type Props = {
   onNext: (formData: NewChallengeStep6FormValues) => void;
@@ -52,8 +47,12 @@ export const NewChallengeStep6Form = ({ onNext, onPrevious }: Props) => {
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormControl>
+                {/* <FormControl onChange={() => form.handleSubmit(onSubmit)()}> */}
                 <RadioGroup
-                  onValueChange={field.onChange}
+                  onValueChange={(e) => {
+                    field.onChange(e)
+                    form.handleSubmit(onSubmit)()
+                  }}
                   defaultValue={field.value}
                   className="flex flex-col space-y-1"
                 >
@@ -79,25 +78,6 @@ export const NewChallengeStep6Form = ({ onNext, onPrevious }: Props) => {
             </FormItem>
           )}
         />
-
-        <div className={form.getValues().includeDietLog === 'no' ? 'hidden' : '' }>
-          <p className='text-2xl mb-6'>¿Cuántos cheat meals <strong>al mes</strong> quieres hacer?</p>
-          <p className='mb-4 text-red-600'>Hacer select en paso siguiente</p>
-          <FormField
-            control={form.control}
-            name="monthlyCheatMeals"
-            render={({ field }) => (
-              <FormItem>
-                {/* <FormLabel>monthlyCheatMeals</FormLabel> */}
-                <FormControl>
-                  <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
         <NewChallengeFormStepButtons
           isLoading={isLoading}

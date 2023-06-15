@@ -1,104 +1,47 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { UnitOfTime } from '@/lib/config'
-import { cn } from '@/lib/utils'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ChallengeDuration } from '@/lib/config'
+import { challengeDurationSchema } from '@/lib/validations/challengeDuration.schema'
 
 import { useNewChallengeFormState } from '../hooks/useNewChallengeFormState'
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 
 const challengeDurations = [
   {
-    id: '1m',
-    label: '1 mes',
-    unitOfTime: UnitOfTime.Month,
-    amount: 1
+    id: ChallengeDuration['1m'],
+    title: '1 mes'
   },
   {
-    id: '2m',
-    label: '2 meses',
-    unitOfTime: UnitOfTime.Month,
-    amount: 2
+    id: ChallengeDuration['2m'],
+    title: '2 meses'
   },
   {
-    id: '3m',
-    label: '3 meses',
-    unitOfTime: UnitOfTime.Month,
-    amount: 3
+    id: ChallengeDuration['3m'],
+    title: '3 meses'
   },
   {
-    id: '4m',
-    label: '4 meses',
-    unitOfTime: UnitOfTime.Month,
-    amount: 4
+    id: ChallengeDuration['4m'],
+    title: '4 meses'
   },
   {
-    id: '6m',
-    label: '6 meses',
-    unitOfTime: UnitOfTime.Month,
-    amount: 6
+    id: ChallengeDuration['6m'],
+    title: '6 meses'
   },
   {
-    id: '1y',
-    label: '1 año',
-    unitOfTime: UnitOfTime.Year,
-    amount: 1
-  },
-  {
-    id: 'other',
-    label: 'Otro',
-    unitOfTime: null,
-    amount: 0
+    id: ChallengeDuration['1y'],
+    title: '1 año'
   }
 ]
 
 const newChallengeStep1FormSchema = z.object({
-  // duration: challengeDurationSchema,
-  durationId: z.string(),
-  startDate: z.coerce.date().nullable(),
-  endDate: z.coerce.date().nullable()
-}).superRefine((values, ctx) => {
-  if (values.durationId === 'other') {
-    if (!values.startDate) {
-      ctx.addIssue({
-        message: 'Campo obligatorio',
-        code: z.ZodIssueCode.custom,
-        path: ['startDate']
-      })
-    }
-    if (!values.endDate) {
-      ctx.addIssue({
-        message: 'Campo obligatorio',
-        code: z.ZodIssueCode.custom,
-        path: ['endDate']
-      })
-    }
-    if (values.startDate && values.endDate && values.startDate >= values.endDate) {
-      ctx.addIssue({
-        message: 'Debe ser mayor que la fecha de inicio',
-        code: z.ZodIssueCode.custom,
-        path: ['endDate']
-      })
-    }
-  }
-  return true
+  durationId: challengeDurationSchema
 })
 
 type NewChallengeStep1FormValues = z.infer<typeof newChallengeStep1FormSchema>
@@ -109,13 +52,9 @@ type Props = {
 
 export const NewChallengeStep1Form = ({ onNext }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [showOtherDuration, setShowOtherDuration] = useState<boolean>(false)
   const [newChallengeData, setNewChallengeData] = useNewChallengeFormState()
 
-  const defaultValues = {
-    startDate: newChallengeData.startDate || null,
-    endDate: newChallengeData.endDate || null
-  }
+  const defaultValues = {}
 
   if (newChallengeData.durationId) defaultValues.durationId = newChallengeData.durationId
 
@@ -123,11 +62,6 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
     resolver: zodResolver(newChallengeStep1FormSchema),
     defaultValues
   })
-
-  useEffect(() => {
-    // To prevent hydration problems with date inputs as defaultValues
-    if (!form.getValues().startDate) form.setValue('startDate', new Date())
-  }, [])
 
   async function onSubmit (formData: NewChallengeStep1FormValues) {
     setIsLoading(true)
@@ -157,10 +91,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
               <Select
                 onValueChange={(value) => {
                   field.onChange(value)
-                  setShowOtherDuration(value === 'other')
-                  if (value !== 'other') {
-                    form.handleSubmit(onSubmit)()
-                  }
+                  form.handleSubmit(onSubmit)()
                 }}
                 defaultValue={field.value}
               >
@@ -171,7 +102,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
                 </FormControl>
                 <SelectContent>
                   { challengeDurations.map((d) => (
-                    <SelectItem key={`duration_${d.id}`} value={d.id}>{d.label}</SelectItem>
+                    <SelectItem key={`duration_${d.id}`} value={d.id}>{d.title}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -180,102 +111,7 @@ export const NewChallengeStep1Form = ({ onNext }: Props) => {
           )}
         />
 
-        <div className={`flex flex-row gap-2 ${showOtherDuration ? '' : 'hidden'}`}>
-          <FormField
-            control={form.control}
-            name="startDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col w-full">
-                <FormLabel>Desde</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'pl-3 text-left font-normal',
-                          !field.value && 'text-muted-foreground'
-                        )}
-                      >
-                        {field.value
-                          ? (
-                            format(field.value, 'dd/MM/yyyy')
-                          )
-                          : (
-                            <span>Selecciona una fecha</span>
-                          )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      weekStartsOn={1}
-                      mode="single"
-                      selected={field.value !== null ? field.value : undefined}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date('1900-01-01')
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="endDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col w-full">
-                <FormLabel>Hasta</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={'outline'}
-                        className={cn(
-                          'pl-3 text-left font-normal',
-                          !field.value && 'text-muted-foreground'
-                        )}
-                      >
-                        {field.value
-                          ? (
-                            format(field.value, 'dd/MM/yyyy')
-                          )
-                          : (
-                            <span>Selecciona una fecha</span>
-                          )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      weekStartsOn={1}
-                      mode="single"
-                      selected={field.value !== null ? field.value : undefined}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date()
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <NewChallengeFormStepButtons
-          isLoading={isLoading}
-        />
+        <NewChallengeFormStepButtons isLoading={isLoading} />
       </form>
     </Form>
   )
