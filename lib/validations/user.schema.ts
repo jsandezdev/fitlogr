@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { challengeSchema } from './challenge.schema'
+import { challengeSchema } from './newChallenge.schema'
 // import { accountSchema } from './account.schema'
 // import { sessionSchema } from './session.schema'
 

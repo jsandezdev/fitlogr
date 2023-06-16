@@ -6,7 +6,7 @@ import { unitOfTimeSchema } from './unitOfTime.schema'
 import { weekDaySchema } from './weekDay.schema'
 import { weightGoalSchema } from './weightGoal.schema'
 
-export const challengeSchema = z.object({
+export const newChallengeSchema = z.object({
   // id: z.string().optional(),
   name: z.string(),
   // status: challengeStatusSchema,
@@ -18,10 +18,10 @@ export const challengeSchema = z.object({
   includeRevisionBodyWeight: z.boolean(),
   includeRevisionBodyParts: z.boolean(),
   includeDietLog: z.boolean(),
-  monthlyCheatMeals: z.number(),
+  monthlyCheatMeals: z.number().nullable(),
   includeWeightGoal: z.boolean(),
   includeBodyPartGoals: z.boolean(),
-  weightGoal: weightGoalSchema,
+  weightGoal: weightGoalSchema.nullable(),
   bodyPartGoals: bodyPartGoalSchema.array(),
   weeklyTrainingDays: weekDaySchema.array(),
   createdAt: z.coerce.date().optional(),

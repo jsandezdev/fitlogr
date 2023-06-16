@@ -8,7 +8,7 @@ import * as z from 'zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { GoalFrequency, GoalType } from '@/lib/config'
+import { goalFrequencies, goalTypes } from '@/lib/config'
 import { weightGoalSchema } from '@/lib/validations/weightGoal.schema'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
@@ -16,22 +16,6 @@ import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 const newChallengeStepWeightFormSchema = z.object({
   weightGoal: weightGoalSchema
 })
-
-const types = [
-  { id: GoalType.Gain, title: 'Aumentar' },
-  { id: GoalType.Lose, title: 'Reducir' }
-]
-
-const frequencies = [
-  {
-    id: GoalFrequency.Revision,
-    title: 'En cada revisión'
-  },
-  {
-    id: GoalFrequency.Total,
-    title: 'En total'
-  }
-]
 
 type NewChallengeStepWeightFormValues = z.infer<typeof newChallengeStepWeightFormSchema>
 
@@ -89,7 +73,7 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    { types.map((type, index) => <SelectItem key={`weightGoal_type_${type.id}`} value={type.id}>{type.title}</SelectItem>)}
+                    { goalTypes.map((type, index) => <SelectItem key={`weightGoal_type_${type.id}`} value={type.id}>{type.title}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <FormDescription></FormDescription>
@@ -124,7 +108,7 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    { frequencies.map((frequency, index) => <SelectItem key={`weightGoal_frequency_${frequency.id}`} value={frequency.id}>{frequency.title}</SelectItem>)}
+                    { goalFrequencies.map((frequency, index) => <SelectItem key={`weightGoal_frequency_${frequency.id}`} value={frequency.id}>{frequency.title}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <FormDescription></FormDescription>

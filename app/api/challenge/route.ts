@@ -4,7 +4,7 @@ import * as z from 'zod'
 import { authOptions } from '@/lib/auth'
 import { ChallengeStatus } from '@/lib/config'
 import { prisma } from '@/lib/prisma'
-import { challengeSchema } from '@/lib/validations/challenge.schema'
+import { newChallengeSchema } from '@/lib/validations/newChallenge.schema'
 
 export async function GET () {
   try {
@@ -35,7 +35,7 @@ export async function POST (req: Request) {
     if (!session) return new Response('Unauthorized', { status: 401 })
 
     const json = await req.json()
-    const body = challengeSchema.parse(json)
+    const body = newChallengeSchema.parse(json)
 
     const challenge = await prisma.challenge.create({
       data: {
@@ -57,7 +57,7 @@ export async function POST (req: Request) {
         weeklyTrainingDays: body.weeklyTrainingDays,
         createdAt: body.createdAt,
         updatedAt: body.updatedAt,
-        userId: session.user.id
+        userId: session.user?.id
       }
       // select: {
       //   id: true
@@ -66,7 +66,7 @@ export async function POST (req: Request) {
 
     return new Response(JSON.stringify(challenge))
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 })
     }

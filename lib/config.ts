@@ -56,3 +56,52 @@ export enum ChallengeStatus {
   Canceled = 'Canceled',
   Finished = 'Finished'
 }
+
+export const weekDays = [
+  { id: WeekDay.Monday, title: 'Lunes' },
+  { id: WeekDay.Tuesday, title: 'Martes' },
+  { id: WeekDay.Wednesday, title: 'Miércoles' },
+  { id: WeekDay.Thursday, title: 'Jueves' },
+  { id: WeekDay.Friday, title: 'Viernes' },
+  { id: WeekDay.Saturday, title: 'Sábado' },
+  { id: WeekDay.Sunday, title: 'Domingo' }
+]
+
+export const challengeStatuses = [
+  { id: ChallengeStatus.Active, title: 'Activo' },
+  { id: ChallengeStatus.Canceled, title: 'Cancelado' },
+  { id: ChallengeStatus.Finished, title: 'Finalizado' }
+]
+
+export const goalTypes = [
+  { id: GoalType.Gain, title: 'Aumentar' },
+  { id: GoalType.Lose, title: 'Reducir' }
+]
+
+export const goalFrequencies = [
+  { id: GoalFrequency.Revision, title: 'En cada revisión'},
+  { id: GoalFrequency.Total, title: 'En total' }
+]
+
+export const revisionFrequencies = [
+  { id: RevisionFrequency['1w'], title: 'Cada semana' },
+  { id: RevisionFrequency['2w'], title: 'Cada 2 semanas' },
+  { id: RevisionFrequency['1m'], title: 'Una vez al mes' }
+]
+
+export const unitsOfTime = [
+  { id: UnitOfTime.Day, title: 'Día' },
+  { id: UnitOfTime.Week, title: 'Semana' },
+  { id: UnitOfTime.Month, title: 'Mes' },
+  { id: UnitOfTime.Year, title: 'Año' }
+]
+
+export const bodyParts = [
+  { id: BodyPart.Bicep, title: 'Bíceps' },
+  { id: BodyPart.Chest, title: 'Pectoral' },
+  { id: BodyPart.Hips, title: 'Cadera' },
+  { id: BodyPart.Neck, title: 'Cuello' },
+  { id: BodyPart.Shoulders, title: 'Espalda' },
+  { id: BodyPart.Thigh, title: 'Muslo' },
+  { id: BodyPart.Waist, title: 'Cintura' }
+]

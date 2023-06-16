@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { Progress } from '@/components/ui/progress'
@@ -24,6 +25,8 @@ type Step = {
 }
 
 export const NewChallengeFormWizard = () => {
+  const router = useRouter()
+
   const steps : Step[] = [
     { number: 1, name: '¿Cuánto quieres que dure el reto?' },
     { number: 2, name: '¿Cada cuánto tiempo quieres hacer las revisiones?' },
@@ -79,8 +82,6 @@ export const NewChallengeFormWizard = () => {
 
     setIsLoading(true)
 
-    console.log('challenge: ', challenge)
-
     const {
       number: revisionFrequencyNumber,
       unitOfTime: revisionFrequencyUnitOfTime
@@ -104,8 +105,6 @@ export const NewChallengeFormWizard = () => {
       weeklyTrainingDays: challenge.weeklyTrainingDays
     }
 
-    console.log('data: ', data)
-
     const response = await fetch('/api/challenge/', {
       method: 'POST',
       headers: {
@@ -113,6 +112,8 @@ export const NewChallengeFormWizard = () => {
       },
       body: JSON.stringify(data)
     })
+
+    const createdChallenge = await response.json()
 
     setIsLoading(false)
 
@@ -125,8 +126,10 @@ export const NewChallengeFormWizard = () => {
     }
 
     toast({
-      description: 'El reto ha sido creado.'
+      title: 'El reto ha sido creado.'
     })
+
+    router.push(`/challenge/${createdChallenge?.id}`)
   }
 
   const getRevisionFrequencyByRevisionFrequencyId = (revisionFrequencyId: RevisionFrequency) => {

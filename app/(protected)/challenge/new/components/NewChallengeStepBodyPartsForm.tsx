@@ -8,7 +8,7 @@ import * as z from 'zod'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BodyPart, GoalFrequency, GoalType } from '@/lib/config'
+import { BodyPart, goalFrequencies, goalTypes } from '@/lib/config'
 import { bodyPartGoalSchema } from '@/lib/validations/bodyPartGoal.schema'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
@@ -16,22 +16,6 @@ import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
 const newChallengeStepBodyPartsFormSchema = z.object({
   bodyPartGoals: z.array(bodyPartGoalSchema)
 })
-
-const types = [
-  { id: GoalType.Gain, title: 'Aumentar' },
-  { id: GoalType.Lose, title: 'Reducir' }
-]
-
-const frequencies = [
-  {
-    id: GoalFrequency.Revision,
-    title: 'En cada revisión'
-  },
-  {
-    id: GoalFrequency.Total,
-    title: 'En total'
-  }
-]
 
 type NewChallengeStepBodyPartsFormValues = z.infer<typeof newChallengeStepBodyPartsFormSchema>
 
@@ -109,7 +93,7 @@ export const NewChallengeStepBodyPartsForm = ({ onNext, onPrevious }: Props) => 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div>
+        {/* <div>
           <p>Form values:</p>
           <pre>{JSON.stringify(form.getValues(), null, 2)}</pre>
         </div>
@@ -117,7 +101,7 @@ export const NewChallengeStepBodyPartsForm = ({ onNext, onPrevious }: Props) => 
         <div>
           <p>Form Errors:</p>
           <pre>{JSON.stringify(form.formState.errors, null, 2)}</pre>
-        </div>
+        </div> */}
 
         <div className='space-y-4'>
 
@@ -138,7 +122,7 @@ export const NewChallengeStepBodyPartsForm = ({ onNext, onPrevious }: Props) => 
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          { types.map((type, index) => <SelectItem key={`bodyPartGoals.${index}_type_${type.id}`} value={type.id}>{type.title}</SelectItem>)}
+                          { goalTypes.map((type, index) => <SelectItem key={`bodyPartGoals.${index}_type_${type.id}`} value={type.id}>{type.title}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormDescription></FormDescription>
@@ -173,7 +157,7 @@ export const NewChallengeStepBodyPartsForm = ({ onNext, onPrevious }: Props) => 
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          { frequencies.map((frequency, index) => <SelectItem key={`bodyPartGoals.${index}_frequency_${frequency.id}`} value={frequency.id}>{frequency.title}</SelectItem>)}
+                          { goalFrequencies.map((frequency, index) => <SelectItem key={`bodyPartGoals.${index}_frequency_${frequency.id}`} value={frequency.id}>{frequency.title}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormDescription></FormDescription>

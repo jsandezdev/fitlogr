@@ -7,20 +7,10 @@ import * as z from 'zod'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { WeekDay } from '@/lib/config'
+import { weekDays } from '@/lib/config'
 import { weekDaySchema } from '@/lib/validations/weekDay.schema'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
-
-const weekDays = [
-  { id: WeekDay.Monday, title: 'Lunes' },
-  { id: WeekDay.Tuesday, title: 'Martes' },
-  { id: WeekDay.Wednesday, title: 'Miércoles' },
-  { id: WeekDay.Thursday, title: 'Jueves' },
-  { id: WeekDay.Friday, title: 'Viernes' },
-  { id: WeekDay.Saturday, title: 'Sábado' },
-  { id: WeekDay.Sunday, title: 'Domingo' }
-]
 
 const newChallengeStep4FormSchema = z.object({
   weeklyTrainingDays: z.array(weekDaySchema).refine((value) => value.some((item) => item), {

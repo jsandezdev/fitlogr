@@ -7,10 +7,11 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 interface Props {
+  challengeName: string
   challengeId: string
 }
 
-export function ChallengeNav ({ challengeId }: Props) {
+export function ChallengeNav ({ challengeId, challengeName }: Props) {
   const path = usePathname()
 
   const items = [
@@ -37,7 +38,7 @@ export function ChallengeNav ({ challengeId }: Props) {
       title: 'Configuración',
       href: `/challenge/${challengeId}/settings`,
       icon: Settings,
-      disabled: true
+      disabled: false
     }
   ]
 
@@ -47,6 +48,9 @@ export function ChallengeNav ({ challengeId }: Props) {
 
   return (
     <nav className="grid items-start gap-2">
+      <span className='px-3 pb-4 text-2xl font-bold'>
+        {challengeName}
+      </span>
       {items.map((item, index) => {
         return (
           item.href && (

@@ -60,11 +60,10 @@ type Measurement {
 }
 
 type BodyPartGoal {
-  bodyPart            BodyPart
-  goalType            GoalType
-  amount              Float
-  frequencyAmount     Float
-  frequencyUnitOfTime UnitOfTime
+  bodyPart        BodyPart
+  type            GoalType
+  amount          Float
+  frequency       GoalFrequency
 }
 
 type WeightGoal {
@@ -130,7 +129,7 @@ model VerificationToken {
 model Challenge {
   id                               String @id @default(auto()) @map("_id") @db.ObjectId
   userId                           String @db.ObjectId
-  name                             String?
+  name                             String
   startDate                        DateTime
   endDate                          DateTime
   revisionFrequencyNumber          Int
@@ -139,12 +138,12 @@ model Challenge {
   includeRevisionBodyWeight        Boolean
   includeRevisionBodyParts         Boolean
   includeDietLog                   Boolean
-  monthlyCheatMeals                Int
+  monthlyCheatMeals                Int?
   includeWeightGoal                Boolean
   includeBodyPartGoals             Boolean
   status                           ChallengeStatus
-  weightGoal                       WeightGoal
-  bodyPartGoals                    BodyPartGoal[]
+  weightGoal                       WeightGoal?
+  bodyPartGoals                    Json?
   weeklyTrainingDays               WeekDay[]  
 
   createdAt                        DateTime @default(now())

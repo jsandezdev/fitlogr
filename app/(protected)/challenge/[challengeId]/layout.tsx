@@ -37,7 +37,7 @@ export default async function ChallengeLayout ({
   return (
     <div className="grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
       <aside className="hidden w-[200px] flex-col md:flex">
-        <ChallengeNav challengeId={params.challengeId} />
+        <ChallengeNav challengeName={challenge.name || 'Mi reto'} challengeId={params.challengeId} />
       </aside>
       <main className="flex w-full flex-1 flex-col overflow-hidden">
         {children}

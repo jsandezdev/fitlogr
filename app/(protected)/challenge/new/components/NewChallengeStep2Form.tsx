@@ -7,24 +7,9 @@ import * as z from 'zod'
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { RevisionFrequency } from '@/lib/config'
+import { revisionFrequencies } from '@/lib/config'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
-
-const revisionFrequencies = [
-  {
-    id: RevisionFrequency['1w'],
-    title: 'Cada semana'
-  },
-  {
-    id: RevisionFrequency['2w'],
-    title: 'Cada 2 semanas'
-  },
-  {
-    id: RevisionFrequency['1m'],
-    title: 'Una vez al mes'
-  }
-]
 
 const newChallengeStep2FormSchema = z.object({
   revisionFrequencyId: z.string()
