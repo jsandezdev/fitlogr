@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { z } from 'zod'
 
 import { authOptions } from '@/lib/auth'
+import { currentUserHasAccessToChallenge } from '@/lib/challenge'
 import { ChallengeStatus } from '@/lib/config'
 import { prisma } from '@/lib/prisma'
 import { bodyPartGoalSchema } from '@/lib/validations/bodyPartGoal.schema'
@@ -107,16 +108,4 @@ export async function DELETE (req: Request, context: z.infer<typeof routeContext
 
     return new Response(null, { status: 500 })
   }
-}
-
-async function currentUserHasAccessToChallenge (challengeId: string) {
-  const session = await getServerSession(authOptions)
-  const count = await prisma.challenge.count({
-    where: {
-      id: challengeId,
-      userId: session?.user?.id
-    }
-  })
-
-  return count > 0
 }

@@ -54,7 +54,7 @@ enum ChallengeStatus {
   Finished
 }
 
-type Measurement {
+type BodyPartMeasurement {
   bodyPart BodyPart
   amount   Float
 }
@@ -161,8 +161,8 @@ model Revision {
   frontPhoto                       String?
   sidePhoto                        String?
   backPhoto                        String?
-  weight                           Float?
-  measurements                     Measurement[]
+  bodyWeight                       Float?
+  bodyPartMeasurements             BodyPartMeasurement[]
 
   createdAt                        DateTime @default(now())
   updatedAt                        DateTime @updatedAt  

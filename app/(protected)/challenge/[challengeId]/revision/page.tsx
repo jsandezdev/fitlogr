@@ -22,6 +22,9 @@ export default async function Revision ({ params }: Props) {
   const revisions = await prisma.revision.findMany({
     where: {
       challengeId: params.challengeId
+    },
+    orderBy: {
+      date: 'desc'
     }
   })
 

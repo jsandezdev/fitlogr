@@ -9,6 +9,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { BodyPart, goalFrequencies, goalTypes } from '@/lib/config'
+import { translateBodyPart } from '@/lib/utils'
 import { bodyPartGoalSchema } from '@/lib/validations/bodyPartGoal.schema'
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
@@ -107,7 +108,7 @@ export const NewChallengeStepBodyPartsForm = ({ onNext, onPrevious }: Props) => 
 
           { bodyPartGoalsFields.map((field, index) => (
             <div key={'bodyPartGoal_' + index} className='flex flex-col mb-6 rounded-lg border'>
-              <p className='text-2xl font-bold p-4 border-b'>{field.bodyPart}</p>
+              <p className='text-2xl font-bold p-4 border-b'>{translateBodyPart(field.bodyPart)}</p>
               <div className="grid sm:grid-cols-3 gap-2 p-4">
                 <FormField
                   control={form.control}

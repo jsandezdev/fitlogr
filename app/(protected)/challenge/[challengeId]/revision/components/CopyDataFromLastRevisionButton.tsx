@@ -1,25 +1,26 @@
 'use client'
 
 import { Copy } from 'lucide-react'
+import { FaSpinner } from 'react-icons/fa'
 
 import { Button, ButtonProps, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-interface Props extends ButtonProps {}
+interface Props extends ButtonProps {
+  isLoading: boolean
+}
 
 export const CopyDataFromLastRevisionButton = ({
   className,
+  isLoading,
   variant,
   disabled,
+  onClick,
   ...props
 }: Props) => {
-  const handleOnClick = () => {
-    
-  }
-
   return (
     <Button
-      onClick={handleOnClick}
+      onClick={onClick}
       className={cn(
         buttonVariants({ variant }),
         {
@@ -27,11 +28,13 @@ export const CopyDataFromLastRevisionButton = ({
         },
         className
       )}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       {...props}
     >
-      <Copy className='mr-2 h-4 w-4' />
-      Copiar datos de la última revisión
+      {isLoading
+        ? <><span>Copiando</span><FaSpinner className="ml-2 h-4 w-4 animate-spin" /></>
+        : <><Copy className="mr-2 h-4 w-4" /><span>Copiar datos de la última revisión</span></>
+      }
     </Button>
   )
 }

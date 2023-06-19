@@ -40,7 +40,7 @@ export default async function Settings ({ params }: Props) {
     <ProtectedPage>
       <PageHeader heading="Configuración" text="Datos de configuración de tu reto" />
       <div>
-        <Tabs defaultValue="account" className="w-full">
+        <Tabs defaultValue="general" className="w-full">
           <TabsList className="grid w-full grid-cols-3 max-w-xl">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="revisions">Revisiones</TabsTrigger>
@@ -50,9 +50,7 @@ export default async function Settings ({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle>General</CardTitle>
-                <CardDescription>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </CardDescription>
+                <CardDescription></CardDescription>
               </CardHeader>
               <CardContent className="grid sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
                 <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -79,9 +77,7 @@ export default async function Settings ({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle>Revisiones</CardTitle>
-                <CardDescription>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </CardDescription>
+                <CardDescription></CardDescription>
               </CardHeader>
               <CardContent className="grid sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -132,9 +128,7 @@ export default async function Settings ({ params }: Props) {
             <Card>
               <CardHeader>
                 <CardTitle>Objetivos</CardTitle>
-                <CardDescription>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </CardDescription>
+                <CardDescription></CardDescription>
               </CardHeader>
               <CardContent className="grid sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
                 <div className="grid w-full max-w-sm items-center gap-1.5 hidden">
