@@ -24,7 +24,7 @@ export default async function Progress ({ params }: Props) {
     }
   })
 
-  if (!challenge || challenge.userId !== session.user.id) {
+  if (!challenge || challenge.userId !== session.user?.id) {
     notFound()
   }
 
