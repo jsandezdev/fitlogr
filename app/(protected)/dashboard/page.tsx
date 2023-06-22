@@ -1,22 +1,15 @@
-
-// import { getServerSession } from 'next-auth'
-
-import { PageTitle } from '@/components/PageTitle'
-// import { authOptions } from '@/lib/auth'
+import { PageHeader } from '@/components/PageHeader'
+import { ProtectedPage } from '@/components/ProtectedPage'
 
 export default async function Dashboard () {
-  // const session = await getServerSession(authOptions)
-  // console.log(session)
-
   return (
-    <section className="text">
-      <PageTitle>Inicio</PageTitle>
-      <div className="flex flex-col gap-2">
-        <a href="https://ui.shadcn.com/docs" target='_blank' rel='noreferrer'>https://ui.shadcn.com/docs</a>
-        <a href="https://github.com/shadcn/ui/" target='_blank' rel='noreferrer'>https://github.com/shadcn/ui/</a>
-        <a href="https://tx.shadcn.com/" target='_blank' rel='noreferrer'>https://tx.shadcn.com/</a>
-        <a href="https://github.com/shadcn/taxonomy/" target='_blank' rel='noreferrer'>https://github.com/shadcn/taxonomy/</a>
+    <ProtectedPage>
+      <PageHeader heading="Inicio" text="¡Bievenido a FitLogr!" />
+      <div>
+        <p>
+          Este es un proyecto en desarrollo, por lo que muchas de las funcionalidades no están, o no funcionan correctamente. Si tienes alguna duda sobre cómo irá creciendo la aplicación, alguna sugerencia, o simplemente quieres mandarme un saludo, no dudes en contactar conmigo en <a className='font-bold' href="mailto:jordisandez@gmail.com">jordisandez@gmail.com</a>
+        </p>
       </div>
-    </section>
+    </ProtectedPage>
   )
 }

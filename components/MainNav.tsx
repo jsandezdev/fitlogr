@@ -1,6 +1,6 @@
 'use client'
 
-import { Command as Logo, X as CloseIcon } from 'lucide-react'
+import { DumbbellIcon as Logo, X as CloseIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useSelectedLayoutSegment } from 'next/navigation'
 import * as React from 'react'
@@ -21,7 +21,7 @@ export function MainNav ({ items, children }: Props) {
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
-        <Logo />
+        <Logo className='w-5 h-5' />
         <span className="hidden font-bold sm:inline-block">
           FitLogr
         </span>
