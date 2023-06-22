@@ -1,26 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Fitlogr
 
-## Getting Started
+Welcome to FitLogr! This is a personal project to to achieve challenges related to fitness, in addition to monitoring and controlling it over time.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Currently in development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies Used
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+-   [Nextjs](https://nextjs.org/)
+-   [React](https://react.dev/)
+-   [MongoDB](https://www.mongodb.com/)
+-   [Prisma](https://www.prisma.io/)
+-   [Shadcn ui](https://ui.shadcn.com/)
 
-## Commands
-### Update database structure:
-Edit prisma/schema.prisma
-```
-npx prisma db push
-```
+## Contributions
+
+Contributions are welcome! If you want to improve or add new features to the app, please create a pull request with your changes. I'll be happy to review them and collaborate with you.
+
+## Contact
+
+You can contact me at jordisandez@gmail.com for any inquiries, comments, or collaborations.
