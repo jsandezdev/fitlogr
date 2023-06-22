@@ -51,6 +51,12 @@ export enum BodyPart {
   Thigh = 'Thigh',
 }
 
+export enum PhotoType {
+  front = 'front',
+  side = 'side',
+  back = 'back'
+}
+
 export enum ChallengeStatus {
   Active = 'Active',
   Canceled = 'Canceled',

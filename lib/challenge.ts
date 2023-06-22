@@ -14,3 +14,20 @@ export async function currentUserHasAccessToChallenge (challengeId: string) {
 
   return count > 0
 }
+
+export const checkChallengeHasRevision = async (challengeId: string, revisionId: string) => {
+  const challenge = await prisma.challenge.findUnique({
+    where: {
+      id: challengeId
+    },
+    select: {
+      revisions: {
+        select: {
+          id: true
+        }
+      }
+    }
+  })
+
+  return challenge && challenge.revisions.filter((revision) => revision.id === revisionId).length > 0
+}

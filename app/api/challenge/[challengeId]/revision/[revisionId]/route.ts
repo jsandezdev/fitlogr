@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { z } from 'zod'
 
 import { authOptions } from '@/lib/auth'
-import { currentUserHasAccessToChallenge } from '@/lib/challenge'
+import { checkChallengeHasRevision, currentUserHasAccessToChallenge } from '@/lib/challenge'
 import { prisma } from '@/lib/prisma'
 import { revisionSchema } from '@/lib/validations/revision.schema'
 
@@ -90,21 +90,4 @@ export async function PATCH (req: Request, context: z.infer<typeof routeContextS
 
     return new Response(null, { status: 500 })
   }
-}
-
-const checkChallengeHasRevision = async (challengeId: string, revisionId: string) => {
-  const challenge = await prisma.challenge.findUnique({
-    where: {
-      id: challengeId
-    },
-    select: {
-      revisions: {
-        select: {
-          id: true
-        }
-      }
-    }
-  })
-
-  return challenge && challenge.revisions.filter((revision) => revision.id === revisionId).length > 0
 }

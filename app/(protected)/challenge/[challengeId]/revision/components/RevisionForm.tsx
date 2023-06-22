@@ -25,6 +25,7 @@ import { bodyPartMeasurementSchema } from '@/lib/validations/bodyPartMeasurement
 
 // import { weekDaySchema } from '@/lib/validations/weekDay.schema'
 import { CopyDataFromLastRevisionButton } from './CopyDataFromLastRevisionButton'
+import { RevisionPhotos } from './RevisionPhotos'
 
 const revisionFormSchema = z.object({
   date: z.coerce.date(),
@@ -98,7 +99,7 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
     control: form.control
   })
 
-  async function onSubmit (formData: RevisionFormValues) {
+  const onSubmit = async (formData: RevisionFormValues) => {
     setIsLoading(true)
 
     const response = await fetch(`/api/challenge/${challenge.id}/revision` + (!revision ? '' : `/${revision.id}`), {
@@ -155,9 +156,9 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
       })
     }
 
-    // @TODO: Copiar datos
     form.setValue('bodyWeight', lastRevision.bodyWeight)
-    form.setValue('bodyPartMeasurements', lastRevision.measurements)
+    form.setValue('bodyPartMeasurements', [...lastRevision.bodyPartMeasurements])
+    form.reset(form.getValues()) // To view useFieldArray changes
 
     toast({
       description: 'Datos copiados correctamente.'
@@ -222,6 +223,22 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
               </FormItem>
             )}
           />
+          { challenge.includeRevisionBodyWeight && (
+            <FormField
+              control={form.control}
+              name="bodyWeight"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Peso corporal (kg)</FormLabel>
+                  <FormControl>
+                    <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ) }
         </div>
 
         {/* <FormField
@@ -268,25 +285,6 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
           )}
         /> */}
 
-        { challenge.includeRevisionBodyWeight && (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <FormField
-              control={form.control}
-              name="bodyWeight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Peso corporal (kg)</FormLabel>
-                  <FormControl>
-                    <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
-                  </FormControl>
-                  <FormDescription></FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        ) }
-
         {/* { challenge.includeRevisionBodyParts && (
           <>
             <div>
@@ -318,7 +316,7 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
         ) } */}
 
         { challenge.includeRevisionBodyParts && (
-          <div className='hidden md:visible'>
+          <div className='hidden md:block'>
             <h3 className="text-lg font-medium">Medidas corporales</h3>
             <p className='text-md text-gray-500 mb-2'>Todas las medidas están indicadas en cm (centímetros)</p>
             <Table>
@@ -389,9 +387,7 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
           </div>
         ) }
 
-        { challenge.includeRevisionBodyPhotos && (
-          <p>Fotos aquí</p>
-        ) }
+        { challenge.includeRevisionBodyPhotos && revision && <RevisionPhotos revision={revision} /> }
 
         { revision && <UpdatedFields entity={revision} /> }
 
@@ -405,7 +401,7 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
               }
             )}
           >
-            <span>{ isLoading ? 'Cargando' : 'Guardar' }</span>
+            <span>{ isLoading ? 'Guardando...' : 'Guardar' }</span>
             {isLoading ? <FaSpinner className="ml-2 h-4 w-4 animate-spin" /> : <SaveIcon className="ml-2 h-4 w-4" /> }
           </Button>
         </div>

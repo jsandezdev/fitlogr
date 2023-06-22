@@ -29,6 +29,8 @@ export default async function NewRevision ({ params } : Props) {
     notFound()
   }
 
+  // @TODO: Crear la revisión nada más entrar para poder subir las fotos
+
   return (
     <ProtectedPage>
       <PageHeader heading="Nueva revisión" text="Introduce a continuación los datos de la revisión" />
