@@ -1,0 +1,45 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: 'Create env file'
+      run: |
+        touch .env
+        echo HOST='${{ secrets.HOST }}' >> .env
+        echo NODE_ENV='${{ secrets.NODE_ENV }}' >> .env
+        echo DATABASE_URL='${{ secrets.DATABASE_URL }}' >> .env
+        echo NEXTAUTH_SECRET='${{ secrets.NEXTAUTH_SECRET }}' >> .env
+        echo NEXTAUTH_URL='${{ secrets.NEXTAUTH_URL }}' >> .env
+        echo GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}' >> .env
+        echo GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' >> .env
+        cat .env
+
+    - name: Build
+      run: npm run build
+
+    - name: Start
+      run: pm2 restart npm /home/actions/fitlogr/fitlogr/fitlogr/fitlogr/ --name fitlogr --update-env -- start
