@@ -1,72 +1,69 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { signIn } from 'next-auth/react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { FaSpinner } from 'react-icons/fa'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FaSpinner } from 'react-icons/fa';
+import * as z from 'zod';
 
-import { buttonVariants } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { toast } from '@/components/ui/use-toast'
-import { cn } from '@/lib/utils'
-import { userAuthSchema } from '@/lib/validations/userAuth.schema'
+import { buttonVariants } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import { userAuthSchema } from '@/lib/validations/userAuth.schema';
 
-import { SocialLogin } from './SocialLogin'
+import { SocialLogin } from './SocialLogin';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-type FormData = z.infer<typeof userAuthSchema>
+type FormData = z.infer<typeof userAuthSchema>;
 
-export function UserAuthForm ({
-  className,
-  ...props
-}: UserAuthFormProps) {
+export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(userAuthSchema)
-  })
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
+    resolver: zodResolver(userAuthSchema),
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
 
-  async function onSubmit (data: FormData) {
-    setIsLoading(true)
+  async function onSubmit(data: FormData) {
+    setIsLoading(true);
 
-    const callbackUrl = searchParams?.get('callbackUrl') || '/profile'
+    const callbackUrl = searchParams?.get('callbackUrl') || '/profile';
 
     const signInResult = await signIn('credentials', {
       email: data.email.toLowerCase(),
       password: data.password,
       redirect: false,
-      callbackUrl
-    })
+      callbackUrl,
+    });
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (!signInResult?.ok) {
       return toast({
         title: 'Something went wrong.',
         description: 'Your sign in request failed. Please try again.',
-        variant: 'destructive'
-      })
+        variant: 'destructive',
+      });
     }
 
     if (!signInResult?.error) {
-      router.push(callbackUrl)
+      router.push(callbackUrl);
     } else {
       return toast({
         title: 'Error al acceder',
         description: 'Credenciales no válidas',
-        variant: 'destructive'
-      })
+        variant: 'destructive',
+      });
     }
   }
 
@@ -100,7 +97,7 @@ export function UserAuthForm ({
             </Label>
             <Input
               id="password"
-              placeholder='****************'
+              placeholder="****************"
               type="password"
               autoCapitalize="none"
               autoComplete="off"
@@ -114,10 +111,11 @@ export function UserAuthForm ({
               </p>
             )}
           </div>
-          <button className={cn(buttonVariants())} disabled={isLoading || isGoogleLoading}>
-            {isLoading && (
-              <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
+          <button
+            className={cn(buttonVariants())}
+            disabled={isLoading || isGoogleLoading}
+          >
+            {isLoading && <FaSpinner className="mr-2 h-4 w-4 animate-spin" />}
             Acceder
           </button>
         </div>
@@ -128,5 +126,5 @@ export function UserAuthForm ({
         disabled={isLoading}
       />
     </div>
-  )
+  );
 }

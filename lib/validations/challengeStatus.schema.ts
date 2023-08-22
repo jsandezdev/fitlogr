@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { ChallengeStatus } from '../config'
+import { ChallengeStatus } from '../config';
 
-export const challengeStatusSchema = z.nativeEnum(ChallengeStatus)
+export const challengeStatusSchema = z.nativeEnum(ChallengeStatus);

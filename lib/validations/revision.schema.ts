@@ -1,6 +1,6 @@
-import * as z from 'zod'
+import * as z from 'zod';
 
-import { bodyPartMeasurementSchema } from './bodyPartMeasurement.schema'
+import { bodyPartMeasurementSchema } from './bodyPartMeasurement.schema';
 
 export const revisionSchema = z.object({
   date: z.coerce.date(),
@@ -11,5 +11,5 @@ export const revisionSchema = z.object({
   backPhoto: z.string().optional().nullable(),
   bodyPartMeasurements: bodyPartMeasurementSchema.array(),
   createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
-})
+  updatedAt: z.coerce.date().optional(),
+});

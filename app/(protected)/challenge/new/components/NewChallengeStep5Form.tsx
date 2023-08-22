@@ -1,44 +1,51 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { Switch } from '@/components/ui/switch'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Switch } from '@/components/ui/switch';
 
-import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
+import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons';
 
 const newChallengeStep5FormSchema = z.object({
   includeWeightGoal: z.boolean(),
-  includeBodyPartGoals: z.boolean()
-})
+  includeBodyPartGoals: z.boolean(),
+});
 
-type NewChallengeStep5FormValues = z.infer<typeof newChallengeStep5FormSchema>
+type NewChallengeStep5FormValues = z.infer<typeof newChallengeStep5FormSchema>;
 
 const defaultValues: Partial<NewChallengeStep5FormValues> = {
   includeWeightGoal: false,
-  includeBodyPartGoals: false
-}
+  includeBodyPartGoals: false,
+};
 
 type Props = {
   onNext: (formData: NewChallengeStep5FormValues) => void;
   onPrevious: () => void;
-}
+};
 
 export const NewChallengeStep5Form = ({ onNext, onPrevious }: Props) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<NewChallengeStep5FormValues>({
     resolver: zodResolver(newChallengeStep5FormSchema),
-    defaultValues
-  })
+    defaultValues,
+  });
 
-  async function onSubmit (formData: NewChallengeStep5FormValues) {
-    setIsLoading(true)
-    onNext(formData)
-    setIsLoading(false)
+  async function onSubmit(formData: NewChallengeStep5FormValues) {
+    setIsLoading(true);
+    onNext(formData);
+    setIsLoading(false);
   }
 
   return (
@@ -61,9 +68,7 @@ export const NewChallengeStep5Form = ({ onNext, onPrevious }: Props) => {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Peso
-                    </FormLabel>
+                    <FormLabel className="text-base">Peso</FormLabel>
                     <FormDescription>
                       Aumentar o reducir tu peso corporal
                     </FormDescription>
@@ -84,10 +89,11 @@ export const NewChallengeStep5Form = ({ onNext, onPrevious }: Props) => {
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">
-                     Medidas corporales
+                      Medidas corporales
                     </FormLabel>
                     <FormDescription>
-                      Aumentar o reducir el volumen de algunas partes de tu cuerpo
+                      Aumentar o reducir el volumen de algunas partes de tu
+                      cuerpo
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -108,5 +114,5 @@ export const NewChallengeStep5Form = ({ onNext, onPrevious }: Props) => {
         />
       </form>
     </Form>
-  )
-}
+  );
+};

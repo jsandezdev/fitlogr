@@ -1,11 +1,11 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
 interface Props {
   params: {
-    challengeId: string
-  }
+    challengeId: string;
+  };
 }
 
-export default async function Challenge ({ params }: Props) {
-  redirect(`/challenge/${params.challengeId}/dashboard`)
+export default async function Challenge({ params }: Props) {
+  redirect(`/challenge/${params.challengeId}/dashboard`);
 }

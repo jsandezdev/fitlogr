@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { UnitOfTime } from '../config'
+import { UnitOfTime } from '../config';
 
-export const unitOfTimeSchema = z.nativeEnum(UnitOfTime)
+export const unitOfTimeSchema = z.nativeEnum(UnitOfTime);

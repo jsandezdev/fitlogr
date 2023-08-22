@@ -1,49 +1,65 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { goalFrequencies, goalTypes } from '@/lib/config'
-import { weightGoalSchema } from '@/lib/validations/weightGoal.schema'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { goalFrequencies, goalTypes } from '@/lib/config';
+import { weightGoalSchema } from '@/lib/validations/weightGoal.schema';
 
-import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
+import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons';
 
 const newChallengeStepWeightFormSchema = z.object({
-  weightGoal: weightGoalSchema
-})
+  weightGoal: weightGoalSchema,
+});
 
-type NewChallengeStepWeightFormValues = z.infer<typeof newChallengeStepWeightFormSchema>
+type NewChallengeStepWeightFormValues = z.infer<
+  typeof newChallengeStepWeightFormSchema
+>;
 
 const defaultValues: Partial<NewChallengeStepWeightFormValues> = {
   weightGoal: {
     type: undefined,
     amount: 0,
-    frequency: undefined
-  }
-}
+    frequency: undefined,
+  },
+};
 
 type Props = {
   onNext: (formData: NewChallengeStepWeightFormValues) => void;
   onPrevious: () => void;
-}
+};
 
 export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<NewChallengeStepWeightFormValues>({
     resolver: zodResolver(newChallengeStepWeightFormSchema),
-    defaultValues
-  })
+    defaultValues,
+  });
 
-  async function onSubmit (formData: NewChallengeStepWeightFormValues) {
-    setIsLoading(true)
-    onNext(formData)
-    setIsLoading(false)
+  async function onSubmit(formData: NewChallengeStepWeightFormValues) {
+    setIsLoading(true);
+    onNext(formData);
+    setIsLoading(false);
   }
 
   return (
@@ -66,14 +82,24 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Quiero</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona uno..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    { goalTypes.map((type, index) => <SelectItem key={`weightGoal_type_${type.id}`} value={type.id}>{type.title}</SelectItem>)}
+                    {goalTypes.map((type, index) => (
+                      <SelectItem
+                        key={`weightGoal_type_${type.id}`}
+                        value={type.id}
+                      >
+                        {type.title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormDescription></FormDescription>
@@ -88,7 +114,11 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
               <FormItem>
                 <FormLabel>Cantidad (kg)</FormLabel>
                 <FormControl>
-                  <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(event) => field.onChange(+event.target.value)}
+                  />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -101,14 +131,24 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>¿Con qué frecuencia?</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona uno..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    { goalFrequencies.map((frequency, index) => <SelectItem key={`weightGoal_frequency_${frequency.id}`} value={frequency.id}>{frequency.title}</SelectItem>)}
+                    {goalFrequencies.map((frequency, index) => (
+                      <SelectItem
+                        key={`weightGoal_frequency_${frequency.id}`}
+                        value={frequency.id}
+                      >
+                        {frequency.title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormDescription></FormDescription>
@@ -124,5 +164,5 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
         />
       </form>
     </Form>
-  )
-}
+  );
+};

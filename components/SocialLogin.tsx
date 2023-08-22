@@ -1,18 +1,18 @@
-import { signIn } from 'next-auth/react'
-import { Dispatch, SetStateAction } from 'react'
-import { FaGoogle, FaSpinner } from 'react-icons/fa'
+import { signIn } from 'next-auth/react';
+import { Dispatch, SetStateAction } from 'react';
+import { FaGoogle, FaSpinner } from 'react-icons/fa';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
-import { buttonVariants } from './ui/button'
+import { buttonVariants } from './ui/button';
 
 interface Props {
-  isLoading: boolean,
-  setIsLoading: Dispatch<SetStateAction<boolean>>,
-  disabled: boolean
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  disabled: boolean;
 }
 
-export const SocialLogin = ({ isLoading, setIsLoading, disabled } : Props) => {
+export const SocialLogin = ({ isLoading, setIsLoading, disabled }: Props) => {
   return (
     <>
       <div className="relative">
@@ -29,20 +29,18 @@ export const SocialLogin = ({ isLoading, setIsLoading, disabled } : Props) => {
         type="button"
         className={cn(buttonVariants({ variant: 'outline' }))}
         onClick={() => {
-          setIsLoading(true)
-          signIn('google', { callbackUrl: '/' })
+          setIsLoading(true);
+          signIn('google', { callbackUrl: '/' });
         }}
         disabled={isLoading || disabled}
       >
-        {isLoading
-          ? (
-            <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
-          )
-          : (
-            <FaGoogle className="mr-2 h-4 w-4" />
-          )}{' '}
+        {isLoading ? (
+          <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <FaGoogle className="mr-2 h-4 w-4" />
+        )}{' '}
         Google
       </button>
     </>
-  )
-}
+  );
+};

@@ -1,33 +1,33 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import { Progress } from '@/components/ui/progress'
-import { toast } from '@/components/ui/use-toast'
-import { ChallengeDuration, RevisionFrequency, UnitOfTime } from '@/lib/config'
+import { Progress } from '@/components/ui/progress';
+import { toast } from '@/components/ui/use-toast';
+import { ChallengeDuration, RevisionFrequency, UnitOfTime } from '@/lib/config';
 
-import { useNewChallengeFormState } from '../hooks/useNewChallengeFormState'
-import { NewChallengeStep1Form } from './NewChallengeStep1Form'
-import { NewChallengeStep2Form } from './NewChallengeStep2Form'
-import { NewChallengeStep3Form } from './NewChallengeStep3Form'
-import { NewChallengeStep4Form } from './NewChallengeStep4Form'
-import { NewChallengeStep5Form } from './NewChallengeStep5Form'
-import { NewChallengeStep6Form } from './NewChallengeStep6Form'
-import { NewChallengeStepBodyPartsForm } from './NewChallengeStepBodyPartsForm'
-import { NewChallengeStepCheatMealsForm } from './NewChallengeStepCheatMealsForm'
-import { NewChallengeStepNameForm } from './NewChallengeStepNameForm'
-import { NewChallengeStepWeightForm } from './NewChallengeStepWeightForm'
+import { useNewChallengeFormState } from '../hooks/useNewChallengeFormState';
+import { NewChallengeStep1Form } from './NewChallengeStep1Form';
+import { NewChallengeStep2Form } from './NewChallengeStep2Form';
+import { NewChallengeStep3Form } from './NewChallengeStep3Form';
+import { NewChallengeStep4Form } from './NewChallengeStep4Form';
+import { NewChallengeStep5Form } from './NewChallengeStep5Form';
+import { NewChallengeStep6Form } from './NewChallengeStep6Form';
+import { NewChallengeStepBodyPartsForm } from './NewChallengeStepBodyPartsForm';
+import { NewChallengeStepCheatMealsForm } from './NewChallengeStepCheatMealsForm';
+import { NewChallengeStepNameForm } from './NewChallengeStepNameForm';
+import { NewChallengeStepWeightForm } from './NewChallengeStepWeightForm';
 
 type Step = {
-  number: number,
-  name: string
-}
+  number: number;
+  name: string;
+};
 
 export const NewChallengeFormWizard = () => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const steps : Step[] = [
+  const steps: Step[] = [
     { number: 1, name: '¿Cuánto quieres que dure el reto?' },
     { number: 2, name: '¿Cada cuánto tiempo quieres hacer las revisiones?' },
     { number: 3, name: '¿Qué datos quieres registrar?' },
@@ -37,55 +37,64 @@ export const NewChallengeFormWizard = () => {
     { number: 7, name: '¿Cuáles son tus objetivos en las medidas corporales?' },
     { number: 8, name: '¿Quieres controlar también si cumples con la dieta?' },
     { number: 9, name: '¿Cuántos cheat meals al mes quieres hacer?' },
-    { number: 10, name: 'Por último, ¿qué nombre quieres ponerle al reto?' }
-  ]
+    { number: 10, name: 'Por último, ¿qué nombre quieres ponerle al reto?' },
+  ];
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [currentStep, setCurrentStep] = useState(steps[0])
-  const [formData, setFormData] = useNewChallengeFormState()
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentStep, setCurrentStep] = useState(steps[0]);
+  const [formData, setFormData] = useNewChallengeFormState();
 
   const goNextStep = (stepFormData: any) => {
-    const newFormData = { ...formData, ...stepFormData }
-    setFormData(newFormData)
+    const newFormData = { ...formData, ...stepFormData };
+    setFormData(newFormData);
 
     if (currentStep.number < steps.length) {
-      let newStepNumber = currentStep.number + 1
+      let newStepNumber = currentStep.number + 1;
 
-      if (newStepNumber === 6 && !newFormData.includeWeightGoal) newStepNumber++
-      if (newStepNumber === 7 && !newFormData.includeBodyPartGoals) newStepNumber++
-      if (newStepNumber === 9 && newFormData.includeDietLog === 'no') newStepNumber++
+      if (newStepNumber === 6 && !newFormData.includeWeightGoal)
+        newStepNumber++;
+      if (newStepNumber === 7 && !newFormData.includeBodyPartGoals)
+        newStepNumber++;
+      if (newStepNumber === 9 && newFormData.includeDietLog === 'no')
+        newStepNumber++;
 
-      setCurrentStepNumber(newStepNumber)
+      setCurrentStepNumber(newStepNumber);
     } else {
-      saveChallenge(newFormData)
+      saveChallenge(newFormData);
     }
-  }
+  };
 
   const goPreviousStep = () => {
     if (currentStep.number > 1) {
-      let newStepNumber = currentStep.number - 1
+      let newStepNumber = currentStep.number - 1;
 
-      if (newStepNumber === 9 && formData.includeDietLog === 'no') newStepNumber--
-      if (newStepNumber === 7 && !formData.includeBodyPartGoals) newStepNumber--
-      if (newStepNumber === 6 && !formData.includeWeightGoal) newStepNumber--
-      setCurrentStepNumber(newStepNumber)
+      if (newStepNumber === 9 && formData.includeDietLog === 'no')
+        newStepNumber--;
+      if (newStepNumber === 7 && !formData.includeBodyPartGoals)
+        newStepNumber--;
+      if (newStepNumber === 6 && !formData.includeWeightGoal) newStepNumber--;
+      setCurrentStepNumber(newStepNumber);
     }
-  }
+  };
 
   const setCurrentStepNumber = (newStepNumber: number) => {
-    const newStep: Step | undefined = steps.find((step) => step.number === newStepNumber)
-    if (newStep) setCurrentStep(newStep)
-  }
+    const newStep: Step | undefined = steps.find(
+      (step) => step.number === newStepNumber,
+    );
+    if (newStep) setCurrentStep(newStep);
+  };
 
   const saveChallenge = async (challenge: any) => {
-    if (isLoading) return null
+    if (isLoading) return null;
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     const {
       number: revisionFrequencyNumber,
-      unitOfTime: revisionFrequencyUnitOfTime
-    } = getRevisionFrequencyByRevisionFrequencyId(challenge.revisionFrequencyId)
+      unitOfTime: revisionFrequencyUnitOfTime,
+    } = getRevisionFrequencyByRevisionFrequencyId(
+      challenge.revisionFrequencyId,
+    );
 
     const data = {
       name: challenge.name,
@@ -97,133 +106,166 @@ export const NewChallengeFormWizard = () => {
       includeRevisionBodyWeight: challenge.includeRevisionBodyWeight,
       includeRevisionBodyParts: challenge.includeRevisionBodyParts,
       includeDietLog: challenge.includeDietLog === 'yes',
-      monthlyCheatMeals: challenge.includeDietLog === 'yes' ? challenge.monthlyCheatMeals : null,
+      monthlyCheatMeals:
+        challenge.includeDietLog === 'yes' ? challenge.monthlyCheatMeals : null,
       includeWeightGoal: challenge.includeWeightGoal,
       includeBodyPartGoals: challenge.includeBodyPartGoals,
       weightGoal: challenge.includeWeightGoal ? challenge.weightGoal : null,
-      bodyPartGoals: challenge.includeBodyPartGoals ? challenge.bodyPartGoals : [],
-      weeklyTrainingDays: challenge.weeklyTrainingDays
-    }
+      bodyPartGoals: challenge.includeBodyPartGoals
+        ? challenge.bodyPartGoals
+        : [],
+      weeklyTrainingDays: challenge.weeklyTrainingDays,
+    };
 
     const response = await fetch('/api/challenge/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
-    })
+      body: JSON.stringify(data),
+    });
 
-    const createdChallenge = await response.json()
+    const createdChallenge = await response.json();
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (!response?.ok) {
       return toast({
         title: 'Algo ha ido mal.',
-        description: 'Tu reto no ha sido creado. Por favor, inténtalo de nuevo.',
-        variant: 'destructive'
-      })
+        description:
+          'Tu reto no ha sido creado. Por favor, inténtalo de nuevo.',
+        variant: 'destructive',
+      });
     }
 
     toast({
-      title: 'El reto ha sido creado.'
-    })
+      title: 'El reto ha sido creado.',
+    });
 
-    router.push(`/challenge/${createdChallenge?.id}`)
-  }
+    router.push(`/challenge/${createdChallenge?.id}`);
+  };
 
-  const getRevisionFrequencyByRevisionFrequencyId = (revisionFrequencyId: RevisionFrequency) => {
-    let number = 0
-    let unitOfTime = null
+  const getRevisionFrequencyByRevisionFrequencyId = (
+    revisionFrequencyId: RevisionFrequency,
+  ) => {
+    let number = 0;
+    let unitOfTime = null;
 
     switch (revisionFrequencyId) {
-    case RevisionFrequency['1w']:
-      number = 1
-      unitOfTime = UnitOfTime.Week
-      break
+      case RevisionFrequency['1w']:
+        number = 1;
+        unitOfTime = UnitOfTime.Week;
+        break;
 
-    case RevisionFrequency['2w']:
-      number = 2
-      unitOfTime = UnitOfTime.Week
-      break
+      case RevisionFrequency['2w']:
+        number = 2;
+        unitOfTime = UnitOfTime.Week;
+        break;
 
-    case RevisionFrequency['1m']:
-      number = 1
-      unitOfTime = UnitOfTime.Month
-      break
+      case RevisionFrequency['1m']:
+        number = 1;
+        unitOfTime = UnitOfTime.Month;
+        break;
     }
 
-    return { number, unitOfTime }
-  }
+    return { number, unitOfTime };
+  };
 
   const getEndDateByDurationId = (durationId: ChallengeDuration) => {
-    const endDate = new Date()
+    const endDate = new Date();
 
     switch (durationId) {
-    case ChallengeDuration['1m']:
-      endDate.setMonth(endDate.getMonth() + 1)
-      break
+      case ChallengeDuration['1m']:
+        endDate.setMonth(endDate.getMonth() + 1);
+        break;
 
-    case ChallengeDuration['2m']:
-      endDate.setMonth(endDate.getMonth() + 2)
-      break
+      case ChallengeDuration['2m']:
+        endDate.setMonth(endDate.getMonth() + 2);
+        break;
 
-    case ChallengeDuration['3m']:
-      endDate.setMonth(endDate.getMonth() + 3)
-      break
+      case ChallengeDuration['3m']:
+        endDate.setMonth(endDate.getMonth() + 3);
+        break;
 
-    case ChallengeDuration['4m']:
-      endDate.setMonth(endDate.getMonth() + 4)
-      break
+      case ChallengeDuration['4m']:
+        endDate.setMonth(endDate.getMonth() + 4);
+        break;
 
-    case ChallengeDuration['6m']:
-      endDate.setMonth(endDate.getMonth() + 6)
-      break
+      case ChallengeDuration['6m']:
+        endDate.setMonth(endDate.getMonth() + 6);
+        break;
 
-    case ChallengeDuration['1y']:
-      endDate.setFullYear(endDate.getFullYear() + 1)
-      break
+      case ChallengeDuration['1y']:
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        break;
     }
 
-    return endDate
-  }
+    return endDate;
+  };
 
   return (
-    <div className='mb-4'>
+    <div className="mb-4">
       <Progress
-        value={currentStep.number / steps.length * 100}
-        className='mb-6'
+        value={(currentStep.number / steps.length) * 100}
+        className="mb-6"
       />
-      <p className='text-2xl mb-6'>{ currentStep.name }</p>
-      <section className={ currentStep.number === 1 ? '' : 'hidden'}>
-        <NewChallengeStep1Form onNext={goNextStep}/>
+      <p className="text-2xl mb-6">{currentStep.name}</p>
+      <section className={currentStep.number === 1 ? '' : 'hidden'}>
+        <NewChallengeStep1Form onNext={goNextStep} />
       </section>
-      <section className={ currentStep.number === 2 ? '' : 'hidden'}>
-        <NewChallengeStep2Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 2 ? '' : 'hidden'}>
+        <NewChallengeStep2Form
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 3 ? '' : 'hidden'}>
-        <NewChallengeStep3Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 3 ? '' : 'hidden'}>
+        <NewChallengeStep3Form
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 4 ? '' : 'hidden'}>
-        <NewChallengeStep4Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 4 ? '' : 'hidden'}>
+        <NewChallengeStep4Form
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 5 ? '' : 'hidden'}>
-        <NewChallengeStep5Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 5 ? '' : 'hidden'}>
+        <NewChallengeStep5Form
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 6 ? '' : 'hidden'}>
-        <NewChallengeStepWeightForm onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 6 ? '' : 'hidden'}>
+        <NewChallengeStepWeightForm
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 7 ? '' : 'hidden'}>
-        <NewChallengeStepBodyPartsForm onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 7 ? '' : 'hidden'}>
+        <NewChallengeStepBodyPartsForm
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 8 ? '' : 'hidden'}>
-        <NewChallengeStep6Form onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 8 ? '' : 'hidden'}>
+        <NewChallengeStep6Form
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 9 ? '' : 'hidden'}>
-        <NewChallengeStepCheatMealsForm onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 9 ? '' : 'hidden'}>
+        <NewChallengeStepCheatMealsForm
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
-      <section className={ currentStep.number === 10 ? '' : 'hidden'}>
-        <NewChallengeStepNameForm onNext={goNextStep} onPrevious={goPreviousStep}/>
+      <section className={currentStep.number === 10 ? '' : 'hidden'}>
+        <NewChallengeStepNameForm
+          onNext={goNextStep}
+          onPrevious={goPreviousStep}
+        />
       </section>
 
       {/* <div>
@@ -231,5 +273,5 @@ export const NewChallengeFormWizard = () => {
         <pre>{JSON.stringify(formData, null, 2)}</pre>
       </div> */}
     </div>
-  )
-}
+  );
+};

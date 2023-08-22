@@ -1,8 +1,8 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { BodyPartSchema } from './bodyPart.schema'
+import { BodyPartSchema } from './bodyPart.schema';
 
 export const bodyPartMeasurementSchema = z.object({
   bodyPart: z.lazy(() => BodyPartSchema),
-  amount: z.number()
-})
+  amount: z.number(),
+});

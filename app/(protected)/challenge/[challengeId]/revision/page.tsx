@@ -1,32 +1,32 @@
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth';
 
-import { EmptyPlaceholder } from '@/components/EmptyPlaceholder'
-import { NewRevisionButton } from '@/components/NewRevisionButton'
-import { PageHeader } from '@/components/PageHeader'
-import { ProtectedPage } from '@/components/ProtectedPage'
-import { RevisionItem } from '@/components/RevisionItem'
-import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
+import { EmptyPlaceholder } from '@/components/EmptyPlaceholder';
+import { NewRevisionButton } from '@/components/NewRevisionButton';
+import { PageHeader } from '@/components/PageHeader';
+import { ProtectedPage } from '@/components/ProtectedPage';
+import { RevisionItem } from '@/components/RevisionItem';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 interface Props {
   params: {
-    challengeId: string
-  }
+    challengeId: string;
+  };
 }
 
-export default async function Revision ({ params }: Props) {
-  const session = await getServerSession(authOptions)
+export default async function Revision({ params }: Props) {
+  const session = await getServerSession(authOptions);
 
-  if (!session) return new Response('Unauthorized', { status: 401 })
+  if (!session) return new Response('Unauthorized', { status: 401 });
 
   const revisions = await prisma.revision.findMany({
     where: {
-      challengeId: params.challengeId
+      challengeId: params.challengeId,
     },
     orderBy: {
-      date: 'desc'
-    }
-  })
+      date: 'desc',
+    },
+  });
 
   return (
     <ProtectedPage>
@@ -34,25 +34,26 @@ export default async function Revision ({ params }: Props) {
         <NewRevisionButton challengeId={params.challengeId} />
       </PageHeader>
       <div>
-        {revisions?.length
-          ? (
-            <div className="divide-y divide-border rounded-md border">
-              {revisions.map((revision) => (
-                <RevisionItem key={revision.id} revision={revision} />
-              ))}
-            </div>
-          )
-          : (
-            <EmptyPlaceholder>
-              <EmptyPlaceholder.Icon name="FileText" />
-              <EmptyPlaceholder.Title>No hay revisiones</EmptyPlaceholder.Title>
-              <EmptyPlaceholder.Description>
+        {revisions?.length ? (
+          <div className="divide-y divide-border rounded-md border">
+            {revisions.map((revision) => (
+              <RevisionItem key={revision.id} revision={revision} />
+            ))}
+          </div>
+        ) : (
+          <EmptyPlaceholder>
+            <EmptyPlaceholder.Icon name="FileText" />
+            <EmptyPlaceholder.Title>No hay revisiones</EmptyPlaceholder.Title>
+            <EmptyPlaceholder.Description>
               Aún no tienes ninguna revisión. Empieza creando una nueva.
-              </EmptyPlaceholder.Description>
-              <NewRevisionButton challengeId={params.challengeId} variant='secondary' />
-            </EmptyPlaceholder>
-          )}
+            </EmptyPlaceholder.Description>
+            <NewRevisionButton
+              challengeId={params.challengeId}
+              variant="secondary"
+            />
+          </EmptyPlaceholder>
+        )}
       </div>
     </ProtectedPage>
-  )
+  );
 }

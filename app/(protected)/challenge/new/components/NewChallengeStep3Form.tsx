@@ -1,55 +1,68 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { UnitOfTime } from '@/lib/config'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { UnitOfTime } from '@/lib/config';
 
-import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
+import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons';
 
 const newChallengeStep3FormSchema = z.object({
   includeRevisionBodyPhotos: z.boolean(),
   includeRevisionBodyWeight: z.boolean(),
-  includeRevisionBodyParts: z.boolean()
-})
+  includeRevisionBodyParts: z.boolean(),
+});
 
-type NewChallengeStep3FormValues = z.infer<typeof newChallengeStep3FormSchema>
+type NewChallengeStep3FormValues = z.infer<typeof newChallengeStep3FormSchema>;
 
 const defaultValues: Partial<NewChallengeStep3FormValues> = {
   includeRevisionBodyWeight: false,
   includeRevisionBodyPhotos: false,
-  includeRevisionBodyParts: false
-}
+  includeRevisionBodyParts: false,
+};
 
 type Props = {
   onNext: (formData: NewChallengeStep3FormValues) => void;
   onPrevious: () => void;
-}
+};
 
 export const NewChallengeStep3Form = ({ onNext, onPrevious }: Props) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<NewChallengeStep3FormValues>({
     resolver: zodResolver(newChallengeStep3FormSchema),
-    defaultValues
-  })
+    defaultValues,
+  });
 
-  async function onSubmit (formData: NewChallengeStep3FormValues) {
-    setIsLoading(true)
-    onNext(formData)
-    setIsLoading(false)
+  async function onSubmit(formData: NewChallengeStep3FormValues) {
+    setIsLoading(true);
+    onNext(formData);
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
         <div>
           <div className="space-y-4">
             <FormField
@@ -58,9 +71,7 @@ export const NewChallengeStep3Form = ({ onNext, onPrevious }: Props) => {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Peso
-                    </FormLabel>
+                    <FormLabel className="text-base">Peso</FormLabel>
                     <FormDescription>
                       Controla la evolución de tu peso corporal
                     </FormDescription>
@@ -80,11 +91,12 @@ export const NewChallengeStep3Form = ({ onNext, onPrevious }: Props) => {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Fotos
-                    </FormLabel>
+                    <FormLabel className="text-base">Fotos</FormLabel>
                     <FormDescription>
-                      Con sólo tres fotos en cada revisión (<strong>frontal</strong>, <strong>lateral</strong> y <strong>de espaldas</strong>) podrás medir tu progreso a lo largo del tiempo de manera visual
+                      Con sólo tres fotos en cada revisión (
+                      <strong>frontal</strong>, <strong>lateral</strong> y{' '}
+                      <strong>de espaldas</strong>) podrás medir tu progreso a
+                      lo largo del tiempo de manera visual
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -102,11 +114,11 @@ export const NewChallengeStep3Form = ({ onNext, onPrevious }: Props) => {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Medidas
-                    </FormLabel>
+                    <FormLabel className="text-base">Medidas</FormLabel>
                     <FormDescription>
-                      Registra varias medidas corporales (bíceps, cintura, glúteo, entre otros) para un control exhaustivo de tu progreso durante el reto
+                      Registra varias medidas corporales (bíceps, cintura,
+                      glúteo, entre otros) para un control exhaustivo de tu
+                      progreso durante el reto
                     </FormDescription>
                   </div>
                   <FormControl>
@@ -127,5 +139,5 @@ export const NewChallengeStep3Form = ({ onNext, onPrevious }: Props) => {
         />
       </form>
     </Form>
-  )
-}
+  );
+};

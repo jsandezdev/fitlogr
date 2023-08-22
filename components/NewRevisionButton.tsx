@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { Loader2, Plus } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { Loader2, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import { Button, ButtonProps, buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Button, ButtonProps, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface Props extends ButtonProps {
-  challengeId: string
+  challengeId: string;
 }
 
 export const NewRevisionButton = ({
@@ -16,14 +16,14 @@ export const NewRevisionButton = ({
   className,
   variant,
   ...props
-} : Props) => {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+}: Props) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleOnClick = () => {
-    setIsLoading(true)
-    router.push(`/challenge/${challengeId}/revision/new`)
-  }
+    setIsLoading(true);
+    router.push(`/challenge/${challengeId}/revision/new`);
+  };
 
   return (
     <Button
@@ -31,21 +31,19 @@ export const NewRevisionButton = ({
       className={cn(
         buttonVariants({ variant }),
         {
-          'cursor-not-allowed opacity-60': isLoading
+          'cursor-not-allowed opacity-60': isLoading,
         },
-        className
+        className,
       )}
       disabled={isLoading}
       {...props}
     >
-      {isLoading
-        ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        )
-        : (
-          <Plus className="mr-2 h-4 w-4" />
-        )}
-          Nueva revisión
+      {isLoading ? (
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      ) : (
+        <Plus className="mr-2 h-4 w-4" />
+      )}
+      Nueva revisión
     </Button>
-  )
-}
+  );
+};

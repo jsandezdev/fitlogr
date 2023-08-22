@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { ChallengeDuration } from '../config'
+import { ChallengeDuration } from '../config';
 
-export const challengeDurationSchema = z.nativeEnum(ChallengeDuration)
+export const challengeDurationSchema = z.nativeEnum(ChallengeDuration);

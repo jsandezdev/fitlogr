@@ -1,52 +1,60 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { Checkbox } from '@/components/ui/checkbox'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { weekDays } from '@/lib/config'
-import { weekDaySchema } from '@/lib/validations/weekDay.schema'
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { weekDays } from '@/lib/config';
+import { weekDaySchema } from '@/lib/validations/weekDay.schema';
 
-import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons'
+import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons';
 
 const newChallengeStep4FormSchema = z.object({
-  weeklyTrainingDays: z.array(weekDaySchema).refine((value) => value.some((item) => item), {
-    message: 'Tienes que seleccionar almenos uno.'
-  })
-})
+  weeklyTrainingDays: z
+    .array(weekDaySchema)
+    .refine((value) => value.some((item) => item), {
+      message: 'Tienes que seleccionar almenos uno.',
+    }),
+});
 
-type NewChallengeStep4FormValues = z.infer<typeof newChallengeStep4FormSchema>
+type NewChallengeStep4FormValues = z.infer<typeof newChallengeStep4FormSchema>;
 
 const defaultValues: Partial<NewChallengeStep4FormValues> = {
-  weeklyTrainingDays: []
-}
+  weeklyTrainingDays: [],
+};
 
 type Props = {
   onNext: (formData: NewChallengeStep4FormValues) => void;
   onPrevious: () => void;
-}
+};
 
 export const NewChallengeStep4Form = ({ onNext, onPrevious }: Props) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<NewChallengeStep4FormValues>({
     resolver: zodResolver(newChallengeStep4FormSchema),
-    defaultValues
-  })
+    defaultValues,
+  });
 
-  async function onSubmit (formData: NewChallengeStep4FormValues) {
-    setIsLoading(true)
-    onNext(formData)
-    setIsLoading(false)
+  async function onSubmit(formData: NewChallengeStep4FormValues) {
+    setIsLoading(true);
+    onNext(formData);
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
         {/* <div>
           <p>Form values:</p>
           <pre>{JSON.stringify(form.getValues(), null, 2)}</pre>
@@ -62,7 +70,7 @@ export const NewChallengeStep4Form = ({ onNext, onPrevious }: Props) => {
           name="weeklyTrainingDays"
           render={() => (
             <FormItem>
-              { weekDays.map((item) => (
+              {weekDays.map((item) => (
                 <FormField
                   key={`weekdays_${item.id}`}
                   control={form.control}
@@ -80,10 +88,10 @@ export const NewChallengeStep4Form = ({ onNext, onPrevious }: Props) => {
                               return checked
                                 ? field.onChange([...field.value, item.id])
                                 : field.onChange(
-                                  field.value?.filter(
-                                    (value) => value !== item.id
-                                  )
-                                )
+                                    field.value?.filter(
+                                      (value) => value !== item.id,
+                                    ),
+                                  );
                             }}
                           />
                         </FormControl>
@@ -91,7 +99,7 @@ export const NewChallengeStep4Form = ({ onNext, onPrevious }: Props) => {
                           {item.title}
                         </FormLabel>
                       </FormItem>
-                    )
+                    );
                   }}
                 />
               ))}
@@ -106,5 +114,5 @@ export const NewChallengeStep4Form = ({ onNext, onPrevious }: Props) => {
         />
       </form>
     </Form>
-  )
-}
+  );
+};

@@ -1,10 +1,10 @@
-import * as z from 'zod'
+import * as z from 'zod';
 
 // import { challengeStatusSchema } from './challengeStatus.schema'
-import { bodyPartGoalSchema } from './bodyPartGoal.schema'
-import { unitOfTimeSchema } from './unitOfTime.schema'
-import { weekDaySchema } from './weekDay.schema'
-import { weightGoalSchema } from './weightGoal.schema'
+import { bodyPartGoalSchema } from './bodyPartGoal.schema';
+import { unitOfTimeSchema } from './unitOfTime.schema';
+import { weekDaySchema } from './weekDay.schema';
+import { weightGoalSchema } from './weightGoal.schema';
 
 export const newChallengeSchema = z.object({
   // id: z.string().optional(),
@@ -25,7 +25,7 @@ export const newChallengeSchema = z.object({
   bodyPartGoals: bodyPartGoalSchema.array(),
   weeklyTrainingDays: weekDaySchema.array(),
   createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional()
+  updatedAt: z.coerce.date().optional(),
   // userId: z.string()
   // user: userSchema
-})
+});

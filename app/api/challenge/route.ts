@@ -1,41 +1,41 @@
-import { getServerSession } from 'next-auth/next'
-import * as z from 'zod'
+import { getServerSession } from 'next-auth/next';
+import * as z from 'zod';
 
-import { authOptions } from '@/lib/auth'
-import { ChallengeStatus } from '@/lib/config'
-import { prisma } from '@/lib/prisma'
-import { newChallengeSchema } from '@/lib/validations/newChallenge.schema'
+import { authOptions } from '@/lib/auth';
+import { ChallengeStatus } from '@/lib/config';
+import { prisma } from '@/lib/prisma';
+import { newChallengeSchema } from '@/lib/validations/newChallenge.schema';
 
-export async function GET () {
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
-    if (!session) return new Response('Unauthorized', { status: 401 })
+    if (!session) return new Response('Unauthorized', { status: 401 });
 
     const challenges = await prisma.challenge.findMany({
       select: {
         id: true,
-        name: true
+        name: true,
       },
       where: {
-        userId: session.user.id
-      }
-    })
+        userId: session.user.id,
+      },
+    });
 
-    return new Response(JSON.stringify(challenges))
+    return new Response(JSON.stringify(challenges));
   } catch (error) {
-    return new Response(null, { status: 500 })
+    return new Response(null, { status: 500 });
   }
 }
 
-export async function POST (req: Request) {
+export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
-    if (!session) return new Response('Unauthorized', { status: 401 })
+    if (!session) return new Response('Unauthorized', { status: 401 });
 
-    const json = await req.json()
-    const body = newChallengeSchema.parse(json)
+    const json = await req.json();
+    const body = newChallengeSchema.parse(json);
 
     const challenge = await prisma.challenge.create({
       data: {
@@ -57,20 +57,20 @@ export async function POST (req: Request) {
         weeklyTrainingDays: body.weeklyTrainingDays,
         createdAt: body.createdAt,
         updatedAt: body.updatedAt,
-        userId: session.user?.id
-      }
+        userId: session.user?.id,
+      },
       // select: {
       //   id: true
       // }
-    })
+    });
 
-    return new Response(JSON.stringify(challenge))
+    return new Response(JSON.stringify(challenge));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 })
+      return new Response(JSON.stringify(error.issues), { status: 422 });
     }
 
-    return new Response(null, { status: 500 })
+    return new Response(null, { status: 500 });
   }
 }

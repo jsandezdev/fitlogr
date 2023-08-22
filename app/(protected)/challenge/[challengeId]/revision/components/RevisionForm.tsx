@@ -1,31 +1,50 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Challenge, Revision } from '@prisma/client'
-import { format } from 'date-fns'
-import { CalendarIcon, SaveIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useFieldArray, useForm } from 'react-hook-form'
-import { FaSpinner } from 'react-icons/fa'
-import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Challenge, Revision } from '@prisma/client';
+import { format } from 'date-fns';
+import { CalendarIcon, SaveIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { FaSpinner } from 'react-icons/fa';
+import * as z from 'zod';
 
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { toast } from '@/components/ui/use-toast'
-import { UpdatedFields } from '@/components/UpdatedFields'
-import { BodyPart } from '@/lib/config'
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { toast } from '@/components/ui/use-toast';
+import { UpdatedFields } from '@/components/UpdatedFields';
+import { BodyPart } from '@/lib/config';
 // import { BodyPart, weekDays } from '@/lib/config'
-import { cn, translateBodyPart } from '@/lib/utils'
-import { bodyPartMeasurementSchema } from '@/lib/validations/bodyPartMeasurement.schema'
+import { cn, translateBodyPart } from '@/lib/utils';
+import { bodyPartMeasurementSchema } from '@/lib/validations/bodyPartMeasurement.schema';
 
 // import { weekDaySchema } from '@/lib/validations/weekDay.schema'
-import { CopyDataFromLastRevisionButton } from './CopyDataFromLastRevisionButton'
-import { RevisionPhotos } from './RevisionPhotos'
+import { CopyDataFromLastRevisionButton } from './CopyDataFromLastRevisionButton';
+import { RevisionPhotos } from './RevisionPhotos';
 
 const revisionFormSchema = z.object({
   date: z.coerce.date(),
@@ -34,10 +53,10 @@ const revisionFormSchema = z.object({
   sidePhoto: z.string().optional().nullable(),
   backPhoto: z.string().optional().nullable(),
   bodyWeight: z.number().optional().nullable(),
-  bodyPartMeasurements: z.array(bodyPartMeasurementSchema)
-})
+  bodyPartMeasurements: z.array(bodyPartMeasurementSchema),
+});
 
-type RevisionFormValues = z.infer<typeof revisionFormSchema>
+type RevisionFormValues = z.infer<typeof revisionFormSchema>;
 
 const defaultValues: Partial<RevisionFormValues> = {
   date: new Date(),
@@ -49,125 +68,136 @@ const defaultValues: Partial<RevisionFormValues> = {
   bodyPartMeasurements: [
     {
       bodyPart: BodyPart.Bicep,
-      amount: 0
+      amount: 0,
     },
     {
       bodyPart: BodyPart.Chest,
-      amount: 0
+      amount: 0,
     },
     {
       bodyPart: BodyPart.Hips,
-      amount: 0
+      amount: 0,
     },
     {
       bodyPart: BodyPart.Neck,
-      amount: 0
+      amount: 0,
     },
     {
       bodyPart: BodyPart.Shoulders,
-      amount: 0
+      amount: 0,
     },
     {
       bodyPart: BodyPart.Thigh,
-      amount: 0
+      amount: 0,
     },
     {
       bodyPart: BodyPart.Waist,
-      amount: 0
-    }
-  ]
-}
+      amount: 0,
+    },
+  ],
+};
 
 interface Props {
-  challenge: Challenge,
-  revision?: Revision
+  challenge: Challenge;
+  revision?: Revision;
 }
 
 export const RevisionForm = ({ challenge, revision }: Props) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isCopyingDataFromLastRevision, setIsCopyingDataFromLastRevision] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCopyingDataFromLastRevision, setIsCopyingDataFromLastRevision] =
+    useState<boolean>(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<RevisionFormValues>({
     resolver: zodResolver(revisionFormSchema),
-    defaultValues: revision || defaultValues
-  })
+    defaultValues: revision || defaultValues,
+  });
 
   const { fields: bodyPartMeasurementFields } = useFieldArray({
     name: 'bodyPartMeasurements',
-    control: form.control
-  })
+    control: form.control,
+  });
 
   const onSubmit = async (formData: RevisionFormValues) => {
-    setIsLoading(true)
+    setIsLoading(true);
 
-    const response = await fetch(`/api/challenge/${challenge.id}/revision` + (!revision ? '' : `/${revision.id}`), {
-      method: !revision ? 'POST' : 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
+    const response = await fetch(
+      `/api/challenge/${challenge.id}/revision` +
+        (!revision ? '' : `/${revision.id}`),
+      {
+        method: !revision ? 'POST' : 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       },
-      body: JSON.stringify(formData)
-    })
+    );
 
-    setIsLoading(false)
+    setIsLoading(false);
 
-    const actionName = !revision ? 'creada' : 'actualizada'
+    const actionName = !revision ? 'creada' : 'actualizada';
 
     if (!response?.ok) {
       return toast({
         title: 'Algo ha ido mal.',
         description: `Tu revisión no ha sido ${actionName}. Por favor, inténtalo de nuevo.`,
-        variant: 'destructive'
-      })
+        variant: 'destructive',
+      });
     }
 
     toast({
-      description: `Revisión ${actionName} correctamente.`
-    })
+      description: `Revisión ${actionName} correctamente.`,
+    });
 
-    router.push(`/challenge/${challenge.id}/revision`)
-  }
+    router.push(`/challenge/${challenge.id}/revision`);
+  };
 
   const handleCopyDataFromLastRevision = async () => {
-    setIsCopyingDataFromLastRevision(true)
+    setIsCopyingDataFromLastRevision(true);
 
-    const response = await fetch(`/api/challenge/${challenge.id}/revision/last`, {
-      method: 'GET'
-    })
+    const response = await fetch(
+      `/api/challenge/${challenge.id}/revision/last`,
+      {
+        method: 'GET',
+      },
+    );
 
-    const lastRevision = await response.json()
+    const lastRevision = await response.json();
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (!response?.ok) {
       return toast({
         title: 'Algo ha ido mal.',
-        description: 'Error al consultar la última revisión. Por favor, inténtalo de nuevo.',
-        variant: 'destructive'
-      })
+        description:
+          'Error al consultar la última revisión. Por favor, inténtalo de nuevo.',
+        variant: 'destructive',
+      });
     }
 
-    setIsCopyingDataFromLastRevision(false)
+    setIsCopyingDataFromLastRevision(false);
 
     if (!lastRevision) {
       return toast({
-        description: 'No hay ninguna revisión anterior'
-      })
+        description: 'No hay ninguna revisión anterior',
+      });
     }
 
-    form.setValue('bodyWeight', lastRevision.bodyWeight)
-    form.setValue('bodyPartMeasurements', [...lastRevision.bodyPartMeasurements])
-    form.reset(form.getValues()) // To view useFieldArray changes
+    form.setValue('bodyWeight', lastRevision.bodyWeight);
+    form.setValue('bodyPartMeasurements', [
+      ...lastRevision.bodyPartMeasurements,
+    ]);
+    form.reset(form.getValues()); // To view useFieldArray changes
 
     toast({
-      description: 'Datos copiados correctamente.'
-    })
-  }
+      description: 'Datos copiados correctamente.',
+    });
+  };
 
   return (
     <Form {...form}>
-      { !revision && (
+      {!revision && (
         <div className="text-end mb-4">
           <CopyDataFromLastRevisionButton
             isLoading={isCopyingDataFromLastRevision}
@@ -177,7 +207,6 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
       )}
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mb-4">
-
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           <FormField
             control={form.control}
@@ -192,16 +221,14 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
                         variant={'outline'}
                         className={cn(
                           'pl-3 text-left font-normal',
-                          !field.value && 'text-muted-foreground'
+                          !field.value && 'text-muted-foreground',
                         )}
                       >
-                        {field.value
-                          ? (
-                            format(field.value, 'PPP')
-                          )
-                          : (
-                            <span>Pick a date</span>
-                          )}
+                        {field.value ? (
+                          format(field.value, 'PPP')
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -223,7 +250,7 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
               </FormItem>
             )}
           />
-          { challenge.includeRevisionBodyWeight && (
+          {challenge.includeRevisionBodyWeight && (
             <FormField
               control={form.control}
               name="bodyWeight"
@@ -231,14 +258,18 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
                 <FormItem>
                   <FormLabel>Peso corporal (kg)</FormLabel>
                   <FormControl>
-                    <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
+                    <Input
+                      type="number"
+                      {...field}
+                      onChange={(event) => field.onChange(+event.target.value)}
+                    />
                   </FormControl>
                   <FormDescription></FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          ) }
+          )}
         </div>
 
         {/* <FormField
@@ -315,46 +346,65 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
           </>
         ) } */}
 
-        { challenge.includeRevisionBodyParts && (
-          <div className='hidden md:block'>
+        {challenge.includeRevisionBodyParts && (
+          <div className="hidden md:block">
             <h3 className="text-lg font-medium">Medidas corporales</h3>
-            <p className='text-md text-gray-500 mb-2'>Todas las medidas están indicadas en cm (centímetros)</p>
+            <p className="text-md text-gray-500 mb-2">
+              Todas las medidas están indicadas en cm (centímetros)
+            </p>
             <Table>
               <TableHeader>
                 <TableRow>
-                  { bodyPartMeasurementFields.map((bodyPartMeasurementField, index) => (
-                    <TableHead key={'bodyPartMeasurement_header_' + index}>{translateBodyPart(bodyPartMeasurementField.bodyPart)}</TableHead>
-                  )) }
+                  {bodyPartMeasurementFields.map(
+                    (bodyPartMeasurementField, index) => (
+                      <TableHead key={'bodyPartMeasurement_header_' + index}>
+                        {translateBodyPart(bodyPartMeasurementField.bodyPart)}
+                      </TableHead>
+                    ),
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow >
-                  { bodyPartMeasurementFields.map((bodyPartMeasurementField, index) => (
-                    <TableCell className="font-medium" key={'bodyPartMeasurement_row_' + index}>
-                      <FormField
-                        control={form.control}
-                        name={`bodyPartMeasurements.${index}.amount`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                  ))}
+                <TableRow>
+                  {bodyPartMeasurementFields.map(
+                    (bodyPartMeasurementField, index) => (
+                      <TableCell
+                        className="font-medium"
+                        key={'bodyPartMeasurement_row_' + index}
+                      >
+                        <FormField
+                          control={form.control}
+                          name={`bodyPartMeasurements.${index}.amount`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  {...field}
+                                  onChange={(event) =>
+                                    field.onChange(+event.target.value)
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </TableCell>
+                    ),
+                  )}
                 </TableRow>
               </TableBody>
             </Table>
           </div>
-        ) }
+        )}
 
-        { challenge.includeRevisionBodyParts && (
-          <div className='md:hidden'>
+        {challenge.includeRevisionBodyParts && (
+          <div className="md:hidden">
             <h3 className="text-lg font-medium">Medidas corporales</h3>
-            <p className='text-md text-gray-500 mb-2'>Todas las medidas están indicadas en cm (centímetros)</p>
+            <p className="text-md text-gray-500 mb-2">
+              Todas las medidas están indicadas en cm (centímetros)
+            </p>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -363,49 +413,63 @@ export const RevisionForm = ({ challenge, revision }: Props) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                { bodyPartMeasurementFields.map((bodyPartMeasurementField, index) => (
-                  <TableRow key={'bodyPartMeasurement_row_' + index}>
-                    <TableCell>{translateBodyPart(bodyPartMeasurementField.bodyPart)}</TableCell>
-                    <TableCell className="font-medium w-[100px]">
-                      <FormField
-                        control={form.control}
-                        name={`bodyPartMeasurements.${index}.amount`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input type='number' {...field} onChange={event => field.onChange(+event.target.value)} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {bodyPartMeasurementFields.map(
+                  (bodyPartMeasurementField, index) => (
+                    <TableRow key={'bodyPartMeasurement_row_' + index}>
+                      <TableCell>
+                        {translateBodyPart(bodyPartMeasurementField.bodyPart)}
+                      </TableCell>
+                      <TableCell className="font-medium w-[100px]">
+                        <FormField
+                          control={form.control}
+                          name={`bodyPartMeasurements.${index}.amount`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  {...field}
+                                  onChange={(event) =>
+                                    field.onChange(+event.target.value)
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ),
+                )}
               </TableBody>
             </Table>
           </div>
-        ) }
+        )}
 
-        { challenge.includeRevisionBodyPhotos && revision && <RevisionPhotos revision={revision} /> }
+        {challenge.includeRevisionBodyPhotos && revision && (
+          <RevisionPhotos revision={revision} />
+        )}
 
-        { revision && <UpdatedFields entity={revision} /> }
+        {revision && <UpdatedFields entity={revision} />}
 
         <div className="text-end">
           <Button
             type="submit"
             disabled={isLoading}
-            className={cn(
-              {
-                'cursor-not-allowed opacity-60': isLoading
-              }
-            )}
+            className={cn({
+              'cursor-not-allowed opacity-60': isLoading,
+            })}
           >
-            <span>{ isLoading ? 'Guardando...' : 'Guardar' }</span>
-            {isLoading ? <FaSpinner className="ml-2 h-4 w-4 animate-spin" /> : <SaveIcon className="ml-2 h-4 w-4" /> }
+            <span>{isLoading ? 'Guardando...' : 'Guardar'}</span>
+            {isLoading ? (
+              <FaSpinner className="ml-2 h-4 w-4 animate-spin" />
+            ) : (
+              <SaveIcon className="ml-2 h-4 w-4" />
+            )}
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};

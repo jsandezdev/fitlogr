@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { WeekDay } from '../config'
+import { WeekDay } from '../config';
 
-export const weekDaySchema = z.nativeEnum(WeekDay)
+export const weekDaySchema = z.nativeEnum(WeekDay);

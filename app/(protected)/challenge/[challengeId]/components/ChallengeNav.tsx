@@ -1,56 +1,54 @@
-'use client'
+'use client';
 
-import { CalendarCheck, GaugeIcon, Settings, TrendingUp } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { CalendarCheck, GaugeIcon, Settings, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
 interface Props {
-  challengeName: string
-  challengeId: string
+  challengeName: string;
+  challengeId: string;
 }
 
-export function ChallengeNav ({ challengeId, challengeName }: Props) {
-  const path = usePathname()
+export function ChallengeNav({ challengeId, challengeName }: Props) {
+  const path = usePathname();
 
   const items = [
     {
       title: 'Panel de control',
       href: `/challenge/${challengeId}/dashboard`,
       icon: GaugeIcon,
-      disabled: true
+      disabled: true,
     },
     {
       title: 'Revisiones',
       href: `/challenge/${challengeId}/revision`,
       icon: CalendarCheck,
-      disabled: false
+      disabled: false,
     },
     {
       title: 'Progreso',
       href: `/challenge/${challengeId}/progress`,
       icon: TrendingUp,
 
-      disabled: true
+      disabled: true,
     },
     {
       title: 'Configuración',
       href: `/challenge/${challengeId}/settings`,
       icon: Settings,
-      disabled: false
-    }
-  ]
+      disabled: false,
+    },
+  ];
 
   if (!items?.length) {
-    return null
+    return null;
   }
 
   return (
     <nav className="grid items-start gap-2">
-      <span className='px-3 pb-4 text-2xl font-bold'>
-        {challengeName}
-      </span>
+      <span className="px-3 pb-4 text-2xl font-bold">{challengeName}</span>
       {items.map((item, index) => {
         return (
           item.href && (
@@ -59,7 +57,7 @@ export function ChallengeNav ({ challengeId, challengeName }: Props) {
                 className={cn(
                   'group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground',
                   path === item.href ? 'bg-accent' : 'transparent',
-                  item.disabled && 'cursor-not-allowed opacity-80'
+                  item.disabled && 'cursor-not-allowed opacity-80',
                 )}
               >
                 <item.icon className="mr-2 h-4 w-4" />
@@ -67,8 +65,8 @@ export function ChallengeNav ({ challengeId, challengeName }: Props) {
               </span>
             </Link>
           )
-        )
+        );
       })}
     </nav>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
+import { Metadata } from 'next';
+import Link from 'next/link';
 
-import { UserAuthForm } from '@/components/UserAuthForm'
+import { UserAuthForm } from '@/components/UserAuthForm';
 
 export const metadata: Metadata = {
   title: 'Login',
-  description: 'Login to your account'
-}
+  description: 'Login to your account',
+};
 
-export default function LoginPage () {
+export default function LoginPage() {
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       {/* <Link
@@ -30,7 +30,8 @@ export default function LoginPage () {
             Bienvenido de nuevo
           </h1>
           <p className="text-sm text-muted-foreground">
-            Ingrese su correo electrónico y su contraseña para iniciar sesión en su cuenta
+            Ingrese su correo electrónico y su contraseña para iniciar sesión en
+            su cuenta
           </p>
         </div>
         <UserAuthForm />
@@ -44,5 +45,5 @@ export default function LoginPage () {
         </p>
       </div>
     </div>
-  )
+  );
 }

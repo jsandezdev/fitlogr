@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { BodyPart } from '../config'
+import { BodyPart } from '../config';
 
-export const BodyPartSchema = z.nativeEnum(BodyPart)
+export const BodyPartSchema = z.nativeEnum(BodyPart);

@@ -1,18 +1,24 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { User } from 'next-auth'
-import { signOut } from 'next-auth/react'
-import React from 'react'
+import Link from 'next/link';
+import { User } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import React from 'react';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { UserAvatar } from '@/components/UserAvatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { UserAvatar } from '@/components/UserAvatar';
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  user: Pick<User, 'name' | 'image' | 'email'>
+  user: Pick<User, 'name' | 'image' | 'email'>;
 }
 
-export function UserAccountNav ({ user }: UserAccountNavProps) {
+export function UserAccountNav({ user }: UserAccountNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -40,15 +46,15 @@ export function UserAccountNav ({ user }: UserAccountNavProps) {
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(event) => {
-            event.preventDefault()
+            event.preventDefault();
             signOut({
-              callbackUrl: `${window.location.origin}/login`
-            })
+              callbackUrl: `${window.location.origin}/login`,
+            });
           }}
         >
           Cerrar sesión
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

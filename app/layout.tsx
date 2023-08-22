@@ -1,31 +1,31 @@
-import './globals.css'
+import './globals.css';
 
-import { Inter, Roboto_Flex as RobotoFlex } from 'next/font/google'
-import React from 'react'
+import { Inter, Roboto_Flex as RobotoFlex } from 'next/font/google';
+import React from 'react';
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
 
-import { NextAuthProvider } from './providers'
+import { NextAuthProvider } from './providers';
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-sans'
-})
+  variable: '--font-sans',
+});
 
 const roboto = RobotoFlex({
   subsets: ['latin'],
-  variable: '--font-heading'
-})
+  variable: '--font-heading',
+});
 
 export const metadata = {
   title: 'FitLogr',
-  description: 'Tu app de retos fitness'
-}
+  description: 'Tu app de retos fitness',
+};
 
-export default function RootLayout ({
-  children
+export default function RootLayout({
+  children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="es">
@@ -33,13 +33,11 @@ export default function RootLayout ({
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
           inter.variable,
-          roboto.variable
+          roboto.variable,
         )}
       >
-        <NextAuthProvider>
-          {children}
-        </NextAuthProvider>
+        <NextAuthProvider>{children}</NextAuthProvider>
       </body>
     </html>
-  )
+  );
 }

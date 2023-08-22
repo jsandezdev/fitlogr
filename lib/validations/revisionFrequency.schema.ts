@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { RevisionFrequency } from '../config'
+import { RevisionFrequency } from '../config';
 
-export const revisionFrequencySchema = z.nativeEnum(RevisionFrequency)
+export const revisionFrequencySchema = z.nativeEnum(RevisionFrequency);

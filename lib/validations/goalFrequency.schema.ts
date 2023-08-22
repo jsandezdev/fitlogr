@@ -1,5 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-import { GoalFrequency } from '../config'
+import { GoalFrequency } from '../config';
 
-export const goalFrequencySchema = z.nativeEnum(GoalFrequency)
+export const goalFrequencySchema = z.nativeEnum(GoalFrequency);
