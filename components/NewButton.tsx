@@ -8,11 +8,13 @@ import { Button, ButtonProps, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface Props extends ButtonProps {
-  challengeId: string;
+  to: string;
+  label: string;
 }
 
-export const NewRevisionButton = ({
-  challengeId,
+export const NewButton = ({
+  to,
+  label,
   className,
   variant,
   ...props
@@ -22,7 +24,7 @@ export const NewRevisionButton = ({
 
   const handleOnClick = () => {
     setIsLoading(true);
-    router.push(`/challenge/${challengeId}/revision/new`);
+    router.push(to);
   };
 
   return (
@@ -30,19 +32,19 @@ export const NewRevisionButton = ({
       onClick={handleOnClick}
       className={cn(
         buttonVariants({ variant }),
-        {
-          'cursor-not-allowed opacity-60': isLoading,
-        },
+        { 'cursor-not-allowed opacity-60': isLoading },
+        'flex text-md font-medium',
         className,
       )}
       disabled={isLoading}
       {...props}
     >
       {isLoading ? (
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <Loader2 className="animate-spin mr-2" />
       ) : (
-        <Plus className="mr-2 h-4 w-4" />
+        <Plus className="mr-2" />
       )}
+      Añadir {label}
     </Button>
   );
 };

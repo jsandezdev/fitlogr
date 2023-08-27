@@ -7,22 +7,15 @@ import { useState } from 'react';
 import { Button, ButtonProps, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface Props extends ButtonProps {
-  challengeId: string;
-}
+interface Props extends ButtonProps {}
 
-export const NewRevisionButton = ({
-  challengeId,
-  className,
-  variant,
-  ...props
-}: Props) => {
+export const NewWorkoutButton = ({ className, variant, ...props }: Props) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleOnClick = () => {
     setIsLoading(true);
-    router.push(`/challenge/${challengeId}/revision/new`);
+    router.push('/workout/new');
   };
 
   return (
@@ -43,6 +36,7 @@ export const NewRevisionButton = ({
       ) : (
         <Plus className="mr-2 h-4 w-4" />
       )}
+      Nuevo entrenamiento
     </Button>
   );
 };

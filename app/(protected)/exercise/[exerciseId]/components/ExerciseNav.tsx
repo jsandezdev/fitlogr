@@ -1,46 +1,31 @@
 'use client';
 
-import { CalendarCheck, GaugeIcon, Settings, TrendingUp } from 'lucide-react';
+import { EditIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 
 interface Props {
-  challengeId: string;
+  exerciseId: string;
 }
 
-export function ChallengeNav({ challengeId }: Props) {
+export function ExerciseNav({ exerciseId }: Props) {
   const path = usePathname();
 
   const items = [
     {
-      title: 'Revisiones',
-      href: `/challenge/${challengeId}/revision`,
-      icon: CalendarCheck,
-      disabled: false,
-    },
-    {
-      title: 'Progreso',
-      href: `/challenge/${challengeId}/progress`,
-      icon: TrendingUp,
-
-      disabled: true,
-    },
-    {
-      title: 'Configuración',
-      href: `/challenge/${challengeId}/settings`,
-      icon: Settings,
+      title: 'Ejercicio',
+      href: `/exercise/${exerciseId}/edit`,
+      icon: EditIcon,
       disabled: false,
     },
   ];
 
-  if (!items?.length) {
-    return null;
-  }
+  if (!items?.length || items.length === 1) return null;
 
   return (
-    <nav className="flex flex-row justify-between">
+    <nav className="flex flex-col sm:flex-row md:flex-col justify-between">
       {items.map((item, index) => {
         return (
           item.href && (

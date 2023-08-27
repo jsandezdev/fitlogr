@@ -63,6 +63,12 @@ enum MuscularGroup {
   Shoulders
 }
 
+enum RepetitionType {
+  Range
+  Fixed  
+}
+
+
 type BodyPartMeasurement {
   bodyPart BodyPart
   amount   Float
@@ -81,26 +87,49 @@ type WeightGoal {
   amount          Float
 }
 
+type RepetitionsInReserve {
+  from  Int
+  to    Int
+}
+
+type SerieConfig {
+  repetitionsFrom  Int?
+  repetitionTo     Int?
+  repetitions      Int?
+  repetitionsType  RepetitionType
+  order            Int
+}
+
+type SerieRegister {
+  repetitions  Int
+  restSeconds  Int
+  order        Int
+}
+
 model Exercise {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   name               String   @unique
   description        String?
+  video              String?
   muscularGroups     MuscularGroup[]
-  workouts           WorkoutExercise[]
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+  
+  workouts           WorkoutExercise[]
+  routineExercises   RoutineExercise[]
 }
 
 model Workout {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   date       DateTime
   userId     String    @db.ObjectId
-  routineId  String?   @db.ObjectId
-  exercises  WorkoutExercise[]
+  routineId  String    @db.ObjectId
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   
-  routine  Routine?  @relation(fields: [routineId], references: [id])
+  exercises  WorkoutExercise[]
+  
+  routine  Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -110,21 +139,44 @@ model WorkoutExercise {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   exerciseId   String   @db.ObjectId
   workoutId    String   @db.ObjectId
-  exercise     Exercise @relation(fields: [exerciseId], references: [id])
-  workout      Workout  @relation(fields: [workoutId], references: [id])
+  order        Int
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  
+  series       SerieRegister[]
+
+  exercise     Exercise @relation(fields: [exerciseId], references: [id])
+  workout      Workout  @relation(fields: [workoutId], references: [id])
 }
 
 model Routine {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  userId    String   @db.ObjectId
-  workouts  Workout[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  description         String
+  userId              String   @db.ObjectId
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  
+  routineExercises    RoutineExercise[]
+  workouts            Workout[]
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RoutineExercise {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  routineId             String   @db.ObjectId
+  exerciseId            String   @db.ObjectId
+  weekDay               WeekDay
+  order                 Int
+  restBetweenSeries     Int
+  repetitionsInReserve  RepetitionsInReserve
+  series                SerieConfig[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  routine  Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -140,6 +192,8 @@ model Account {
   scope              String?
   id_token           String?  @db.String
   session_state      String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

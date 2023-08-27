@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 
 import { EmptyPlaceholder } from '@/components/EmptyPlaceholder';
+import { NewButton } from '@/components/NewButton';
 import { NewRevisionButton } from '@/components/NewRevisionButton';
 import { PageHeader } from '@/components/PageHeader';
 import { ProtectedPage } from '@/components/ProtectedPage';
@@ -30,9 +31,10 @@ export default async function Revision({ params }: Props) {
 
   return (
     <ProtectedPage>
-      <PageHeader heading="Revisiones" text="Consulta y añade tus revisiones.">
-        <NewRevisionButton challengeId={params.challengeId} />
-      </PageHeader>
+      <PageHeader
+        heading="Revisiones"
+        text="Consulta y añade tus revisiones."
+      />
       <div>
         {revisions?.length ? (
           <div className="divide-y divide-border rounded-md border">
@@ -54,6 +56,10 @@ export default async function Revision({ params }: Props) {
           </EmptyPlaceholder>
         )}
       </div>
+      <NewButton
+        label="revisión"
+        to={`/challenge/${params.challengeId}/revision/new`}
+      />
     </ProtectedPage>
   );
 }

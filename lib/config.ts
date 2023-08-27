@@ -63,6 +63,15 @@ export enum ChallengeStatus {
   Finished = 'Finished',
 }
 
+export enum MuscularGroup {
+  Chest = 'Chest',
+  Back = 'Back',
+  Arms = 'Arms',
+  Abdominals = 'Abdominals',
+  Legs = 'Legs',
+  Shoulders = 'Shoulders',
+}
+
 export const weekDays = [
   { id: WeekDay.Monday, title: 'Lunes' },
   { id: WeekDay.Tuesday, title: 'Martes' },
@@ -110,4 +119,13 @@ export const bodyParts = [
   { id: BodyPart.Shoulders, title: 'Espalda' },
   { id: BodyPart.Thigh, title: 'Muslo' },
   { id: BodyPart.Waist, title: 'Cintura' },
+];
+
+export const muscularGroups = [
+  { id: MuscularGroup.Abdominals, title: 'Abdominales' },
+  { id: MuscularGroup.Arms, title: 'Brazos' },
+  { id: MuscularGroup.Back, title: 'Espalda' },
+  { id: MuscularGroup.Shoulders, title: 'Hombros' },
+  { id: MuscularGroup.Chest, title: 'Pectoral' },
+  { id: MuscularGroup.Legs, title: 'Piernas' },
 ];

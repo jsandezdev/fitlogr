@@ -13,6 +13,14 @@ const navLinks = [
     title: 'Retos',
     href: '/challenge',
   },
+  {
+    title: 'Ejercicios',
+    href: '/exercise',
+  },
+  {
+    title: 'Entrenamientos',
+    href: '/workout',
+  },
 ];
 
 export const Header = async () => {
