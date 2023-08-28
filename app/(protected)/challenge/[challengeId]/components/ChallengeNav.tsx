@@ -1,6 +1,6 @@
 'use client';
 
-import { CalendarCheck, GaugeIcon, Settings, TrendingUp } from 'lucide-react';
+import { CalendarCheck, Settings, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 

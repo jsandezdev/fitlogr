@@ -12,18 +12,8 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { UnitOfTime } from '@/lib/config';
 
 import { NewChallengeFormStepButtons } from './NewChallengeFormStepButtons';
 

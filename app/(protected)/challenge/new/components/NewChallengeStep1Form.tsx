@@ -64,7 +64,7 @@ type Props = {
 
 export const NewChallengeStep1Form = ({ onNext }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [newChallengeData, setNewChallengeData] = useNewChallengeFormState();
+  const [newChallengeData] = useNewChallengeFormState();
 
   const defaultValues = {};
 

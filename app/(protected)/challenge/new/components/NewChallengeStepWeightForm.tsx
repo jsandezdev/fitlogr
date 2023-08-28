@@ -92,7 +92,7 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {goalTypes.map((type, index) => (
+                    {goalTypes.map((type) => (
                       <SelectItem
                         key={`weightGoal_type_${type.id}`}
                         value={type.id}
@@ -141,7 +141,7 @@ export const NewChallengeStepWeightForm = ({ onNext, onPrevious }: Props) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {goalFrequencies.map((frequency, index) => (
+                    {goalFrequencies.map((frequency) => (
                       <SelectItem
                         key={`weightGoal_frequency_${frequency.id}`}
                         value={frequency.id}

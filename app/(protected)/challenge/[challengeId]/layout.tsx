@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import React from 'react';
 
-import { Separator } from '@/components/ui/separator';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 

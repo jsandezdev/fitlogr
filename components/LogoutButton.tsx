@@ -2,7 +2,11 @@
 
 import { signOut } from 'next-auth/react';
 
-export const LogoutButton = ({ className, ...props }) => {
+type Props = {
+  className: string;
+};
+
+export const LogoutButton = ({ className }: Props) => {
   return (
     <button className={className} type="button" onClick={() => signOut()}>
       Cerrar sesión
